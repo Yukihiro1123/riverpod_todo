@@ -1,9 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AuthRepository {
-  AuthRepository(this._auth);
+  AuthRepository(this._auth, this._firestore);
   final FirebaseAuth _auth;
+  final FirebaseFirestore _firestore;
+
+  static String usersPath(String uid) => 'users/$uid';
+
   Stream<User?> authStateChanges() {
     return _auth.authStateChanges();
   }
@@ -12,9 +17,16 @@ class AuthRepository {
     return _auth.currentUser;
   }
 
-  Future<void> signInWithEmailAndPassword(String email, String password) {
-    return _auth.signInWithEmailAndPassword(email: email, password: password);
-  }
+  //create user
+  Future<void> createAccont(
+          {required User user,
+          required String name,
+          required int ratePerHour}) =>
+      _firestore.collection(usersPath(user.uid)).add({});
+
+  // Future<void> signInWithEmailAndPassword(String email, String password) {
+  //   return _auth.signInWithEmailAndPassword(email: email, password: password);
+  // }
 
   Future<void> createUserWithEmailAndPassword(String email, String password) {
     return _auth.createUserWithEmailAndPassword(
@@ -31,7 +43,8 @@ final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
 });
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return AuthRepository(ref.watch(firebaseAuthProvider));
+  return AuthRepository(
+      ref.watch(firebaseAuthProvider), FirebaseFirestore.instance);
 });
 
 final authStateChangesProvider = StreamProvider<User?>((ref) {

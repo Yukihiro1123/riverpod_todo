@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_todo/src/features/account/account_screen.dart';
+import 'package:riverpod_todo/src/features/auth/presentation/account_screen.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
 import 'package:riverpod_todo/src/features/auth/presentation/auth_screen.dart';
 import 'package:riverpod_todo/src/features/feed/presentation/feed_screen.dart';
@@ -30,21 +30,21 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     initialLocation: '/auth',
     navigatorKey: _rootNavigatorKey,
     debugLogDiagnostics: true,
-    // redirect: (context, state) {
-    //   final isLoggedIn = authRepository.currentUser != null;
-    //   if (isLoggedIn) {
-    //     if (state.subloc.startsWith('/auth')) {
-    //       return '/tasks';
-    //     }
-    //   } else {
-    //     if (state.subloc.startsWith('/tasks') ||
-    //         state.subloc.startsWith('/feeds') ||
-    //         state.subloc.startsWith('/account')) {
-    //       return '/auth';
-    //     }
-    //   }
-    //   return null;
-    // },
+    redirect: (context, state) {
+      final isLoggedIn = authRepository.currentUser != null;
+      if (isLoggedIn) {
+        if (state.subloc.startsWith('/auth')) {
+          return '/tasks';
+        }
+      } else {
+        if (state.subloc.startsWith('/tasks') ||
+            state.subloc.startsWith('/feeds') ||
+            state.subloc.startsWith('/account')) {
+          return '/auth';
+        }
+      }
+      return null;
+    },
     refreshListenable: GoRouterRefreshStream(authRepository.authStateChanges()),
     routes: [
       GoRoute(
