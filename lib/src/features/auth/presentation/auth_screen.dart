@@ -18,7 +18,7 @@ class AuthScreen extends HookConsumerWidget {
         actions: [
           AuthStateChangeAction<UserCreated>(
             (context, state) async {
-              _createUser(ref);
+              await _createUser(ref);
             },
           ),
         ],

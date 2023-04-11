@@ -7,7 +7,8 @@ import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.da
 import 'package:riverpod_todo/src/features/auth/presentation/auth_screen.dart';
 import 'package:riverpod_todo/src/features/feed/presentation/feed_screen.dart';
 import 'package:riverpod_todo/src/features/tasks/presentation/edit_task_screen.dart';
-import 'package:riverpod_todo/src/features/tasks/presentation/tasks_screen.dart';
+import 'package:riverpod_todo/src/features/tasks/presentation/task_screen/task_screen.dart';
+import 'package:riverpod_todo/src/features/tasks/presentation/tasks_screen/tasks_screen.dart';
 import 'package:riverpod_todo/src/routing/go_router_refresh_stream.dart';
 import 'package:riverpod_todo/src/routing/scaffold_with_bottom_nav_bar.dart';
 
@@ -78,6 +79,17 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     key: state.pageKey,
                     fullscreenDialog: true,
                     child: const EditTaskScreen(),
+                  );
+                },
+              ),
+              GoRoute(
+                path: ':id',
+                name: AppRoute.task.name,
+                pageBuilder: (context, state) {
+                  final id = state.params['id']!;
+                  return MaterialPage(
+                    key: state.pageKey,
+                    child: TaskScreen(taskId: id),
                   );
                 },
               ),
