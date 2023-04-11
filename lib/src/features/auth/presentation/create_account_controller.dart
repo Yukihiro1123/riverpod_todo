@@ -16,8 +16,12 @@ class EditAccountController extends AutoDisposeAsyncNotifier<void> {
     // set loading state
     state = const AsyncLoading().copyWithPrevious(state);
     final repository = ref.watch(authRepositoryProvider);
+    final currentUser = ref.read(authRepositoryProvider).currentUser;
+    if (currentUser == null) {
+      throw AssertionError('User can\'t be null');
+    }
     AppUser appUser = AppUser(
-      userId: const Uuid().v4(),
+      userId: currentUser.uid,
       email: user.email!,
       createdAt: DateTime.now(),
     );

@@ -42,8 +42,8 @@ class TasksScreen extends HookConsumerWidget {
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
                     context.goNamed(
-                      AppRoute.task.name,
-                      params: {'ud': task.taskId},
+                      AppRoute.editTask.name,
+                      params: {'id': task.taskId},
                     );
                   },
                 ),

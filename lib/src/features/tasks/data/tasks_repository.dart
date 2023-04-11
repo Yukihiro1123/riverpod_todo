@@ -13,11 +13,11 @@ class TasksRepository {
 
   static String taskPath(String uid, String taskId) =>
       'users/$uid/tasks/$taskId';
-  static String tasksPath(String uid) => 'users/$uid/tasks';
+  static String tasksPath(String uid) => 'users/$uid/tasks/';
 
   // create
   Future<void> addTask({required String uid, required Task task}) {
-    return _firestore.collection(tasksPath(uid)).add(task.toJson());
+    return _firestore.doc(taskPath(uid, task.taskId)).set(task.toJson());
   }
 
   // update
@@ -33,15 +33,16 @@ class TasksRepository {
   }
 
   // read
-  Stream<Task> watchTask({required String uid, required String taskId}) =>
-      _firestore
-          .doc(taskPath(uid, taskId))
-          .withConverter<Task>(
-            fromFirestore: (snapshot, _) => Task.fromJson(snapshot.data()!),
-            toFirestore: (task, _) => task.toJson(),
-          )
-          .snapshots()
-          .map((snapshot) => snapshot.data()!);
+  Stream<Task> watchTask({required String uid, required String taskId}) {
+    return _firestore
+        .doc(taskPath(uid, taskId))
+        .withConverter<Task>(
+          fromFirestore: (snapshot, _) => Task.fromJson(snapshot.data()!),
+          toFirestore: (task, _) => task.toJson(),
+        )
+        .snapshots()
+        .map((snapshot) => snapshot.data()!);
+  }
 
   Stream<List<Task>> watchTasks({required String uid}) => queryTasks(uid: uid)
       .snapshots()
@@ -53,9 +54,15 @@ class TasksRepository {
             toFirestore: (task, _) => task.toJson(),
           );
 
-  Future<List<Task>> fetchTasks({required String uid}) async {
-    final tasks = await queryTasks(uid: uid).get();
-    return tasks.docs.map((doc) => doc.data()).toList();
+  // Future<List<Task>> fetchTasks({required String uid}) async {
+  //   final query = await queryTasks(uid: uid).get();
+  //   return query.docs.map((doc) => doc.data()).toList();
+  // }
+
+  Future<Task> fetchTask({required String uid, required String taskId}) async {
+    final query = await _firestore.collection(taskPath(uid, taskId)).get();
+    final Task task = Task.fromJson(query.docs[0].data());
+    return task;
   }
 }
 
