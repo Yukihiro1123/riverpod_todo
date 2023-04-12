@@ -61,7 +61,7 @@ class EditTaskScreen extends HookConsumerWidget {
                       TextFormField(
                         decoration: const InputDecoration(labelText: 'タイトル'),
                         keyboardAppearance: Brightness.light,
-                        initialValue: data.title,
+                        initialValue: _title,
                         validator: (value) =>
                             (value ?? '').isNotEmpty ? null : '必須入力項目です',
                         onSaved: (value) => _title = value,
