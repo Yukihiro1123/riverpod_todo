@@ -8,5 +8,9 @@ final buttonStyle = ButtonStyle(
   ),
 );
 
+const editProfileDialogShape = RoundedRectangleBorder(
+    borderRadius: BorderRadius.all(Radius.circular(32.0)));
+
 const SizedBox vpaddingBox = SizedBox(width: 10);
 const SizedBox hpaddingBox = SizedBox(height: 10);
+const SizedBox hpaddingBoxL = SizedBox(height: 30);

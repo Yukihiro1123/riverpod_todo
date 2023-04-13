@@ -15,6 +15,7 @@ class EditTaskScreenController extends _$EditTaskScreenController {
   Future<bool> submit({
     required String title,
     required String description,
+    required int status,
     required Task task,
   }) async {
     final currentUser = ref.read(authRepositoryProvider).currentUser;
@@ -25,7 +26,11 @@ class EditTaskScreenController extends _$EditTaskScreenController {
     final repository = ref.read(tasksRepositoryProvider);
     state = await AsyncValue.guard(() => repository.updateTask(
           uid: currentUser.uid,
-          task: task.copyWith(title: title, description: description),
+          task: task.copyWith(
+            title: title,
+            description: description,
+            status: status,
+          ),
         ));
     return state.hasError == false;
   }

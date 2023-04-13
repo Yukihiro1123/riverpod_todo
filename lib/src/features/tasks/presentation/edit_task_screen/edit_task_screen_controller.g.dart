@@ -7,7 +7,7 @@ part of 'edit_task_screen_controller.dart';
 // **************************************************************************
 
 String _$editTaskScreenControllerHash() =>
-    r'0feb9669bfac8b0146f2a3f5f988491c64080146';
+    r'e0ffe04d792cafbb73bbd0f88b755e48d32bbb0d';
 
 /// See also [EditTaskScreenController].
 @ProviderFor(EditTaskScreenController)

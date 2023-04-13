@@ -24,8 +24,8 @@ mixin _$Task {
   List<String> get userId => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
-  bool get isDone => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
+  int get status => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -42,8 +42,8 @@ abstract class $TaskCopyWith<$Res> {
       List<String> userId,
       String title,
       String description,
-      bool isDone,
-      DateTime createdAt});
+      DateTime createdAt,
+      int status});
 }
 
 /// @nodoc
@@ -63,8 +63,8 @@ class _$TaskCopyWithImpl<$Res, $Val extends Task>
     Object? userId = null,
     Object? title = null,
     Object? description = null,
-    Object? isDone = null,
     Object? createdAt = null,
+    Object? status = null,
   }) {
     return _then(_value.copyWith(
       taskId: null == taskId
@@ -83,14 +83,14 @@ class _$TaskCopyWithImpl<$Res, $Val extends Task>
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String,
-      isDone: null == isDone
-          ? _value.isDone
-          : isDone // ignore: cast_nullable_to_non_nullable
-              as bool,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -106,8 +106,8 @@ abstract class _$$_TaskCopyWith<$Res> implements $TaskCopyWith<$Res> {
       List<String> userId,
       String title,
       String description,
-      bool isDone,
-      DateTime createdAt});
+      DateTime createdAt,
+      int status});
 }
 
 /// @nodoc
@@ -123,8 +123,8 @@ class __$$_TaskCopyWithImpl<$Res> extends _$TaskCopyWithImpl<$Res, _$_Task>
     Object? userId = null,
     Object? title = null,
     Object? description = null,
-    Object? isDone = null,
     Object? createdAt = null,
+    Object? status = null,
   }) {
     return _then(_$_Task(
       taskId: null == taskId
@@ -143,14 +143,14 @@ class __$$_TaskCopyWithImpl<$Res> extends _$TaskCopyWithImpl<$Res, _$_Task>
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String,
-      isDone: null == isDone
-          ? _value.isDone
-          : isDone // ignore: cast_nullable_to_non_nullable
-              as bool,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -163,8 +163,8 @@ class _$_Task implements _Task {
       required final List<String> userId,
       required this.title,
       required this.description,
-      required this.isDone,
-      required this.createdAt})
+      required this.createdAt,
+      required this.status})
       : _userId = userId;
 
   factory _$_Task.fromJson(Map<String, dynamic> json) => _$$_TaskFromJson(json);
@@ -184,13 +184,13 @@ class _$_Task implements _Task {
   @override
   final String description;
   @override
-  final bool isDone;
-  @override
   final DateTime createdAt;
+  @override
+  final int status;
 
   @override
   String toString() {
-    return 'Task(taskId: $taskId, userId: $userId, title: $title, description: $description, isDone: $isDone, createdAt: $createdAt)';
+    return 'Task(taskId: $taskId, userId: $userId, title: $title, description: $description, createdAt: $createdAt, status: $status)';
   }
 
   @override
@@ -203,9 +203,9 @@ class _$_Task implements _Task {
             (identical(other.title, title) || other.title == title) &&
             (identical(other.description, description) ||
                 other.description == description) &&
-            (identical(other.isDone, isDone) || other.isDone == isDone) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.status, status) || other.status == status));
   }
 
   @JsonKey(ignore: true)
@@ -216,8 +216,8 @@ class _$_Task implements _Task {
       const DeepCollectionEquality().hash(_userId),
       title,
       description,
-      isDone,
-      createdAt);
+      createdAt,
+      status);
 
   @JsonKey(ignore: true)
   @override
@@ -239,8 +239,8 @@ abstract class _Task implements Task {
       required final List<String> userId,
       required final String title,
       required final String description,
-      required final bool isDone,
-      required final DateTime createdAt}) = _$_Task;
+      required final DateTime createdAt,
+      required final int status}) = _$_Task;
 
   factory _Task.fromJson(Map<String, dynamic> json) = _$_Task.fromJson;
 
@@ -253,9 +253,9 @@ abstract class _Task implements Task {
   @override
   String get description;
   @override
-  bool get isDone;
-  @override
   DateTime get createdAt;
+  @override
+  int get status;
   @override
   @JsonKey(ignore: true)
   _$$_TaskCopyWith<_$_Task> get copyWith => throw _privateConstructorUsedError;

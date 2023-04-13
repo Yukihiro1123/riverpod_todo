@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -8,6 +9,7 @@ import 'package:riverpod_todo/src/features/tasks/domain/task/task.dart';
 import 'package:riverpod_todo/src/features/tasks/presentation/edit_task_screen/edit_task_screen_controller.dart';
 
 import 'package:riverpod_todo/src/utils/async_value_ui.dart';
+import 'package:riverpod_todo/src/utils/style.dart';
 
 class EditTaskScreen extends HookConsumerWidget {
   final String taskId;
@@ -25,6 +27,7 @@ class EditTaskScreen extends HookConsumerWidget {
 
     String? _title;
     String? _description;
+    var _status;
 
     bool _validateAndSaveForm() {
       final form = _formKey.currentState!;
@@ -39,7 +42,11 @@ class EditTaskScreen extends HookConsumerWidget {
       if (_validateAndSaveForm()) {
         final success = await ref
             .read(editTaskScreenControllerProvider.notifier)
-            .submit(title: _title!, description: _description!, task: task);
+            .submit(
+                title: _title!,
+                description: _description!,
+                status: _status == false ? 1 : 2,
+                task: task);
         if (success) {
           context.pop();
         }
@@ -52,42 +59,79 @@ class EditTaskScreen extends HookConsumerWidget {
             data: (data) {
               _title = data.title;
               _description = data.description;
-              return Form(
-                key: _formKey,
-                child: Card(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      TextFormField(
-                        decoration: const InputDecoration(labelText: 'タイトル'),
-                        keyboardAppearance: Brightness.light,
-                        initialValue: _title,
-                        validator: (value) =>
-                            (value ?? '').isNotEmpty ? null : '必須入力項目です',
-                        onSaved: (value) => _title = value,
+              _status = useState(data.status == 1 ? false : true);
+              return Center(
+                child: Form(
+                  key: _formKey,
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          const Text('タスクを編集'),
+                          hpaddingBoxL,
+                          SizedBox(
+                            width: 400,
+                            child: TextFormField(
+                              decoration:
+                                  const InputDecoration(labelText: 'タイトル'),
+                              keyboardAppearance: Brightness.light,
+                              initialValue: _title,
+                              validator: (value) =>
+                                  (value ?? '').isNotEmpty ? null : '必須入力項目です',
+                              onSaved: (value) => _title = value,
+                            ),
+                          ),
+                          hpaddingBoxL,
+                          SizedBox(
+                            width: 400,
+                            child: TextFormField(
+                              decoration:
+                                  const InputDecoration(labelText: '概要'),
+                              keyboardAppearance: Brightness.light,
+                              initialValue: _description,
+                              validator: (value) {
+                                return (value ?? '').isNotEmpty
+                                    ? null
+                                    : '必須入力項目です';
+                              },
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                signed: false,
+                                decimal: false,
+                              ),
+                              onSaved: (value) {
+                                _description = _description = value;
+                              },
+                            ),
+                          ),
+                          hpaddingBoxL,
+                          Text('完了済みフラグ'),
+                          Switch(
+                            value: _status.value,
+                            onChanged: (value) {
+                              _status.value = value;
+
+                              print(_status.value);
+                            },
+                          ),
+                          SizedBox(
+                            width: 300,
+                            height: 50,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _submit(data);
+                              },
+                              child: const Text(
+                                '更新',
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      TextFormField(
-                        decoration: const InputDecoration(labelText: '概要'),
-                        keyboardAppearance: Brightness.light,
-                        initialValue: _description,
-                        validator: (value) =>
-                            (value ?? '').isNotEmpty ? null : '必須入力項目です',
-                        keyboardType: const TextInputType.numberWithOptions(
-                          signed: false,
-                          decimal: false,
-                        ),
-                        onSaved: (value) => _description = _description = value,
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          _submit(data);
-                        },
-                        child: const Text(
-                          'Save',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               );

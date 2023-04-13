@@ -113,25 +113,26 @@ GoRouter goRouter(GoRouterRef ref) {
             ),
           ),
           GoRoute(
-              path: '/account',
-              name: AppRoute.account.name,
-              pageBuilder: (context, state) => NoTransitionPage(
-                    key: state.pageKey,
-                    child: const AccountScreen(),
-                  ),
-              routes: [
-                GoRoute(
-                  path: ':id/edit_profile',
-                  name: AppRoute.editProfile.name,
-                  pageBuilder: (context, state) {
-                    final userId = state.params['id'];
-                    return NoTransitionPage(
-                      key: state.pageKey,
-                      child: EditProfileScreen(userId: userId!),
-                    );
-                  },
-                ),
-              ]),
+            path: '/account',
+            name: AppRoute.account.name,
+            pageBuilder: (context, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const AccountScreen(),
+            ),
+            // routes: [
+            //   GoRoute(
+            //     path: ':id/edit_profile',
+            //     name: AppRoute.editProfile.name,
+            //     pageBuilder: (context, state) {
+            //       final userId = state.params['id'];
+            //       return NoTransitionPage(
+            //         key: state.pageKey,
+            //         child: EditProfileScreen(userId: userId!),
+            //       );
+            //     },
+            //   ),
+            // ],
+          ),
         ],
       ),
     ],

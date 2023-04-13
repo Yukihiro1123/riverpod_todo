@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_todo/src/common_widgets/avatar.dart';
 import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
+import 'package:riverpod_todo/src/features/account/presentation/edit_profile_screen.dart';
+import 'package:riverpod_todo/src/features/account/presentation/my_task_list_part.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
 import 'package:riverpod_todo/src/features/tasks/data/tasks_repository.dart';
 import 'package:riverpod_todo/src/features/tasks/domain/task/task.dart';
@@ -21,7 +23,7 @@ class AccountScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final List<Widget> tabList = [
       const Tab(child: Text('未完了タスク')),
-      const Tab(child: Text('完了済')),
+      const Tab(child: Text('完了済タスク')),
       const Tab(child: Text('グループ')),
     ];
     final _controller = useTabController(initialLength: tabList.length);
@@ -29,11 +31,11 @@ class AccountScreen extends HookConsumerWidget {
           data: (user) {
             return Scaffold(
               appBar: AppBar(actions: [
-                ElevatedButton(
+                IconButton(
                   onPressed: () {
                     ref.read(authRepositoryProvider).signOut();
                   },
-                  child: const Text('サインアウト'),
+                  icon: const Icon(Icons.settings),
                 )
               ]),
               body: Column(
@@ -55,8 +57,22 @@ class AccountScreen extends HookConsumerWidget {
                       vpaddingBox,
                       ElevatedButton(
                         onPressed: () {
-                          context.pushNamed(AppRoute.editProfile.name,
-                              params: {"id": user.userId});
+                          // context.pushNamed(AppRoute.editProfile.name,
+                          //     params: {"id": user.userId});
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  shape: editProfileDialogShape,
+                                  backgroundColor: Colors.grey[200],
+                                  content: SizedBox(
+                                    width: 600,
+                                    height: 600,
+                                    child:
+                                        EditProfileScreen(userId: user.userId),
+                                  ),
+                                );
+                              });
                         },
                         child: const Text('プロフィールを編集'),
                       ),
@@ -77,8 +93,8 @@ class AccountScreen extends HookConsumerWidget {
 
                       /// タブに表示したいWidgetをchildrenに記載する
                       children: const [
-                        Center(child: Text('Ongoing tasks')),
-                        Center(child: Text('Completed tasks')),
+                        MyTaskListPart(status: 1),
+                        MyTaskListPart(status: 2),
                         Center(child: Text('Groups')),
                       ],
                     ),

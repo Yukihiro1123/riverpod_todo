@@ -31,7 +31,7 @@ class AddTaskScreenController extends _$AddTaskScreenController {
             title: title,
             description: description,
             createdAt: DateTime.now(),
-            isDone: false,
+            status: 1,
           ),
         ));
     return state.hasError == false;

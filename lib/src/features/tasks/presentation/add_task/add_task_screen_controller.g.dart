@@ -7,7 +7,7 @@ part of 'add_task_screen_controller.dart';
 // **************************************************************************
 
 String _$addTaskScreenControllerHash() =>
-    r'bebcca0443eef1bb2f41ed53c824ba806ea741f8';
+    r'29a12a207a298fd342d661ef7cbec5f1050442ea';
 
 /// See also [AddTaskScreenController].
 @ProviderFor(AddTaskScreenController)

@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_todo/src/features/tasks/presentation/add_task/add_task_screen_controller.dart';
 
 import 'package:riverpod_todo/src/utils/async_value_ui.dart';
+import 'package:riverpod_todo/src/utils/style.dart';
 
 class AddTaskScreen extends HookConsumerWidget {
   final String? taskId;
@@ -48,7 +49,7 @@ class AddTaskScreen extends HookConsumerWidget {
           TextButton(
             onPressed: state.isLoading ? null : _submit,
             child: const Text(
-              'Save',
+              '作成',
               style: TextStyle(fontSize: 18, color: Colors.white),
             ),
           ),
@@ -60,6 +61,7 @@ class AddTaskScreen extends HookConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              hpaddingBox,
               TextFormField(
                 decoration: const InputDecoration(labelText: 'タイトル'),
                 keyboardAppearance: Brightness.light,
@@ -68,6 +70,7 @@ class AddTaskScreen extends HookConsumerWidget {
                     (value ?? '').isNotEmpty ? null : '必須入力項目です',
                 onSaved: (value) => _title = value,
               ),
+              hpaddingBoxL,
               TextFormField(
                 decoration: const InputDecoration(labelText: '概要'),
                 keyboardAppearance: Brightness.light,

@@ -11,9 +11,8 @@ class TasksRepository {
   const TasksRepository(this._firestore);
   final FirebaseFirestore _firestore;
 
-  static String taskPath(String uid, String taskId) =>
-      'users/$uid/tasks/$taskId';
-  static String tasksPath(String uid) => 'users/$uid/tasks/';
+  static String taskPath(String uid, String taskId) => 'tasks/$taskId';
+  static String tasksPath(String uid) => 'tasks/';
 
   // create
   Future<void> addTask({required String uid, required Task task}) {
