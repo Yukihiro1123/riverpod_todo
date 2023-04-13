@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_todo/src/features/account/presentation/account_screen.dart';
-import 'package:riverpod_todo/src/features/account/presentation/edit_profile_screen.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
 import 'package:riverpod_todo/src/features/auth/presentation/auth_screen.dart';
 import 'package:riverpod_todo/src/features/feed/presentation/feed_screen.dart';
+import 'package:riverpod_todo/src/features/projects/presentation/add_project/add_project_screen.dart';
+import 'package:riverpod_todo/src/features/projects/presentation/projects/projects_screen.dart';
+import 'package:riverpod_todo/src/features/projects/tasks/presentation/add_task/add_task_screen.dart';
+import 'package:riverpod_todo/src/features/projects/tasks/presentation/edit_task_screen/edit_task_screen.dart';
+import 'package:riverpod_todo/src/features/projects/tasks/presentation/tasks_screen/tasks_screen.dart';
 
-import 'package:riverpod_todo/src/features/tasks/presentation/add_task/add_task_screen.dart';
-import 'package:riverpod_todo/src/features/tasks/presentation/edit_task_screen/edit_task_screen.dart';
-
-import 'package:riverpod_todo/src/features/tasks/presentation/tasks_screen/tasks_screen.dart';
 import 'package:riverpod_todo/src/routing/go_router_refresh_stream.dart';
 import 'package:riverpod_todo/src/routing/scaffold_with_bottom_nav_bar.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -22,6 +22,10 @@ final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 enum AppRoute {
   auth,
+  projects,
+  project,
+  addProject,
+  editProject,
   tasks,
   task,
   addTask,
@@ -43,7 +47,7 @@ GoRouter goRouter(GoRouterRef ref) {
       final isLoggedIn = authRepository.currentUser != null;
       if (isLoggedIn) {
         if (state.subloc.startsWith('/auth')) {
-          return '/tasks';
+          return '/projects';
         }
       } else {
         if (state.subloc.startsWith('/tasks') ||
@@ -71,36 +75,63 @@ GoRouter goRouter(GoRouterRef ref) {
         },
         routes: [
           GoRoute(
-            path: '/tasks',
-            name: AppRoute.tasks.name,
+            path: "/projects",
+            name: AppRoute.projects.name,
             pageBuilder: (context, state) => NoTransitionPage(
               key: state.pageKey,
-              child: const TasksScreen(),
+              child: const ProjectsScreen(),
             ),
             routes: [
               GoRoute(
-                path: ':id/edit',
-                name: AppRoute.editTask.name,
-                pageBuilder: (context, state) {
-                  final id = state.params['id'];
-                  return MaterialPage(
-                    key: state.pageKey,
-                    fullscreenDialog: true,
-                    child: EditTaskScreen(taskId: id!),
-                  );
-                },
-              ),
-              GoRoute(
-                path: 'add',
-                name: AppRoute.addTask.name,
+                path: 'add_project',
+                name: AppRoute.addProject.name,
                 parentNavigatorKey: _rootNavigatorKey,
                 pageBuilder: (context, state) {
                   return MaterialPage(
                     key: state.pageKey,
                     fullscreenDialog: true,
-                    child: const AddTaskScreen(),
+                    child: const AddProjectScreen(),
                   );
                 },
+              ),
+              GoRoute(
+                path: ':projectId/tasks',
+                name: AppRoute.project.name,
+                pageBuilder: (context, state) {
+                  final projectId = state.params['projectId'];
+                  return NoTransitionPage(
+                    key: state.pageKey,
+                    child: TasksScreen(projectId: projectId!),
+                  );
+                },
+                routes: [
+                  GoRoute(
+                    path: 'add_task',
+                    name: AppRoute.addTask.name,
+                    parentNavigatorKey: _rootNavigatorKey,
+                    pageBuilder: (context, state) {
+                      final projectId = state.params['projectId'];
+                      return MaterialPage(
+                        key: state.pageKey,
+                        fullscreenDialog: true,
+                        child: AddTaskScreen(projectId: projectId!),
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: ':taskId/edit_task',
+                    name: AppRoute.editTask.name,
+                    pageBuilder: (context, state) {
+                      final projectId = state.params['projectId'];
+                      final taskId = state.params['taskId'];
+                      return NoTransitionPage(
+                        key: state.pageKey,
+                        child: EditTaskScreen(
+                            projectId: projectId!, taskId: taskId!),
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),
@@ -121,14 +152,15 @@ GoRouter goRouter(GoRouterRef ref) {
             ),
             routes: [
               GoRoute(
-                path: ':id/edit',
+                path: ':taskId/edit_my_task',
                 name: AppRoute.editMyTask.name,
                 pageBuilder: (context, state) {
-                  final id = state.params['id'];
-                  return MaterialPage(
+                  final projectId = state.params['projectId'];
+                  final taskId = state.params['taskId'];
+                  return NoTransitionPage(
                     key: state.pageKey,
-                    fullscreenDialog: true,
-                    child: EditTaskScreen(taskId: id!),
+                    child:
+                        EditTaskScreen(projectId: projectId!, taskId: taskId!),
                   );
                 },
               ),

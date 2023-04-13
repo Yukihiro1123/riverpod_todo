@@ -22,10 +22,11 @@ Task _$TaskFromJson(Map<String, dynamic> json) {
 mixin _$Task {
   String get taskId => throw _privateConstructorUsedError;
   List<String> get userId => throw _privateConstructorUsedError;
-  String get title => throw _privateConstructorUsedError;
-  String get description => throw _privateConstructorUsedError;
+  String get taskTitle => throw _privateConstructorUsedError;
+  String get taskDescription => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
-  int get status => throw _privateConstructorUsedError;
+  int get status => throw _privateConstructorUsedError; //1未完了2完了済み
+  String get projectId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -40,10 +41,11 @@ abstract class $TaskCopyWith<$Res> {
   $Res call(
       {String taskId,
       List<String> userId,
-      String title,
-      String description,
+      String taskTitle,
+      String taskDescription,
       DateTime createdAt,
-      int status});
+      int status,
+      String projectId});
 }
 
 /// @nodoc
@@ -61,10 +63,11 @@ class _$TaskCopyWithImpl<$Res, $Val extends Task>
   $Res call({
     Object? taskId = null,
     Object? userId = null,
-    Object? title = null,
-    Object? description = null,
+    Object? taskTitle = null,
+    Object? taskDescription = null,
     Object? createdAt = null,
     Object? status = null,
+    Object? projectId = null,
   }) {
     return _then(_value.copyWith(
       taskId: null == taskId
@@ -75,13 +78,13 @@ class _$TaskCopyWithImpl<$Res, $Val extends Task>
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
+      taskTitle: null == taskTitle
+          ? _value.taskTitle
+          : taskTitle // ignore: cast_nullable_to_non_nullable
               as String,
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
+      taskDescription: null == taskDescription
+          ? _value.taskDescription
+          : taskDescription // ignore: cast_nullable_to_non_nullable
               as String,
       createdAt: null == createdAt
           ? _value.createdAt
@@ -91,6 +94,10 @@ class _$TaskCopyWithImpl<$Res, $Val extends Task>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as int,
+      projectId: null == projectId
+          ? _value.projectId
+          : projectId // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -104,10 +111,11 @@ abstract class _$$_TaskCopyWith<$Res> implements $TaskCopyWith<$Res> {
   $Res call(
       {String taskId,
       List<String> userId,
-      String title,
-      String description,
+      String taskTitle,
+      String taskDescription,
       DateTime createdAt,
-      int status});
+      int status,
+      String projectId});
 }
 
 /// @nodoc
@@ -121,10 +129,11 @@ class __$$_TaskCopyWithImpl<$Res> extends _$TaskCopyWithImpl<$Res, _$_Task>
   $Res call({
     Object? taskId = null,
     Object? userId = null,
-    Object? title = null,
-    Object? description = null,
+    Object? taskTitle = null,
+    Object? taskDescription = null,
     Object? createdAt = null,
     Object? status = null,
+    Object? projectId = null,
   }) {
     return _then(_$_Task(
       taskId: null == taskId
@@ -135,13 +144,13 @@ class __$$_TaskCopyWithImpl<$Res> extends _$TaskCopyWithImpl<$Res, _$_Task>
           ? _value._userId
           : userId // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
+      taskTitle: null == taskTitle
+          ? _value.taskTitle
+          : taskTitle // ignore: cast_nullable_to_non_nullable
               as String,
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
+      taskDescription: null == taskDescription
+          ? _value.taskDescription
+          : taskDescription // ignore: cast_nullable_to_non_nullable
               as String,
       createdAt: null == createdAt
           ? _value.createdAt
@@ -151,6 +160,10 @@ class __$$_TaskCopyWithImpl<$Res> extends _$TaskCopyWithImpl<$Res, _$_Task>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as int,
+      projectId: null == projectId
+          ? _value.projectId
+          : projectId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -161,10 +174,11 @@ class _$_Task implements _Task {
   _$_Task(
       {required this.taskId,
       required final List<String> userId,
-      required this.title,
-      required this.description,
+      required this.taskTitle,
+      required this.taskDescription,
       required this.createdAt,
-      required this.status})
+      required this.status,
+      required this.projectId})
       : _userId = userId;
 
   factory _$_Task.fromJson(Map<String, dynamic> json) => _$$_TaskFromJson(json);
@@ -180,17 +194,20 @@ class _$_Task implements _Task {
   }
 
   @override
-  final String title;
+  final String taskTitle;
   @override
-  final String description;
+  final String taskDescription;
   @override
   final DateTime createdAt;
   @override
   final int status;
+//1未完了2完了済み
+  @override
+  final String projectId;
 
   @override
   String toString() {
-    return 'Task(taskId: $taskId, userId: $userId, title: $title, description: $description, createdAt: $createdAt, status: $status)';
+    return 'Task(taskId: $taskId, userId: $userId, taskTitle: $taskTitle, taskDescription: $taskDescription, createdAt: $createdAt, status: $status, projectId: $projectId)';
   }
 
   @override
@@ -200,12 +217,15 @@ class _$_Task implements _Task {
             other is _$_Task &&
             (identical(other.taskId, taskId) || other.taskId == taskId) &&
             const DeepCollectionEquality().equals(other._userId, _userId) &&
-            (identical(other.title, title) || other.title == title) &&
-            (identical(other.description, description) ||
-                other.description == description) &&
+            (identical(other.taskTitle, taskTitle) ||
+                other.taskTitle == taskTitle) &&
+            (identical(other.taskDescription, taskDescription) ||
+                other.taskDescription == taskDescription) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
-            (identical(other.status, status) || other.status == status));
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.projectId, projectId) ||
+                other.projectId == projectId));
   }
 
   @JsonKey(ignore: true)
@@ -214,10 +234,11 @@ class _$_Task implements _Task {
       runtimeType,
       taskId,
       const DeepCollectionEquality().hash(_userId),
-      title,
-      description,
+      taskTitle,
+      taskDescription,
       createdAt,
-      status);
+      status,
+      projectId);
 
   @JsonKey(ignore: true)
   @override
@@ -237,10 +258,11 @@ abstract class _Task implements Task {
   factory _Task(
       {required final String taskId,
       required final List<String> userId,
-      required final String title,
-      required final String description,
+      required final String taskTitle,
+      required final String taskDescription,
       required final DateTime createdAt,
-      required final int status}) = _$_Task;
+      required final int status,
+      required final String projectId}) = _$_Task;
 
   factory _Task.fromJson(Map<String, dynamic> json) = _$_Task.fromJson;
 
@@ -249,13 +271,15 @@ abstract class _Task implements Task {
   @override
   List<String> get userId;
   @override
-  String get title;
+  String get taskTitle;
   @override
-  String get description;
+  String get taskDescription;
   @override
   DateTime get createdAt;
   @override
   int get status;
+  @override //1未完了2完了済み
+  String get projectId;
   @override
   @JsonKey(ignore: true)
   _$$_TaskCopyWith<_$_Task> get copyWith => throw _privateConstructorUsedError;

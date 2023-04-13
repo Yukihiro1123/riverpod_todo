@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_todo/src/features/tasks/presentation/add_task/add_task_screen_controller.dart';
+import 'package:riverpod_todo/src/features/projects/presentation/add_project/add_project_screen_controller.dart';
 
 import 'package:riverpod_todo/src/utils/async_value_ui.dart';
 import 'package:riverpod_todo/src/utils/style.dart';
 
-class AddTaskScreen extends HookConsumerWidget {
-  final String? taskId;
-  const AddTaskScreen({super.key, this.taskId});
+class AddProjectScreen extends HookConsumerWidget {
+  final String? projectId;
+  const AddProjectScreen({super.key, this.projectId});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen<AsyncValue>(
-      addTaskScreenControllerProvider,
+      addProjectScreenControllerProvider,
       (_, state) => state.showAlertDialogOnError(context),
     );
-    final state = ref.watch(addTaskScreenControllerProvider);
+    final state = ref.watch(addProjectScreenControllerProvider);
 
     final _formKey = GlobalKey<FormState>();
 
@@ -35,7 +35,7 @@ class AddTaskScreen extends HookConsumerWidget {
     Future<void> _submit() async {
       if (_validateAndSaveForm()) {
         final success = await ref
-            .read(addTaskScreenControllerProvider.notifier)
+            .read(addProjectScreenControllerProvider.notifier)
             .submit(title: _title!, description: _description!);
         if (success) {
           context.pop();
@@ -45,6 +45,7 @@ class AddTaskScreen extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        title: const Text("プロジェクトを作成"),
         actions: <Widget>[
           TextButton(
             onPressed: state.isLoading ? null : _submit,

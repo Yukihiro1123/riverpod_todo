@@ -9,9 +9,7 @@ import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
 import 'package:riverpod_todo/src/features/account/presentation/edit_profile_screen.dart';
 import 'package:riverpod_todo/src/features/account/presentation/my_task_list_part.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
-import 'package:riverpod_todo/src/features/tasks/data/tasks_repository.dart';
-import 'package:riverpod_todo/src/features/tasks/domain/task/task.dart';
-import 'package:riverpod_todo/src/features/tasks/presentation/tasks_screen/tasks_screen_controller.dart';
+
 import 'package:riverpod_todo/src/routing/app_router.dart';
 import 'package:riverpod_todo/src/utils/async_value_ui.dart';
 import 'package:riverpod_todo/src/utils/style.dart';

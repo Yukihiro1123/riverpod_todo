@@ -4,17 +4,19 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
-import 'package:riverpod_todo/src/features/tasks/data/tasks_repository.dart';
-import 'package:riverpod_todo/src/features/tasks/domain/task/task.dart';
-import 'package:riverpod_todo/src/features/tasks/presentation/edit_task_screen/edit_task_screen_controller.dart';
+import 'package:riverpod_todo/src/features/projects/tasks/data/tasks_repository.dart';
+import 'package:riverpod_todo/src/features/projects/tasks/domain/task/task.dart';
+import 'package:riverpod_todo/src/features/projects/tasks/presentation/edit_task_screen/edit_task_screen_controller.dart';
 
 import 'package:riverpod_todo/src/utils/async_value_ui.dart';
 import 'package:riverpod_todo/src/utils/style.dart';
 
 class EditTaskScreen extends HookConsumerWidget {
+  final String projectId;
   final String taskId;
 
-  const EditTaskScreen({super.key, required this.taskId});
+  const EditTaskScreen(
+      {super.key, required this.projectId, required this.taskId});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen<AsyncValue>(
@@ -40,13 +42,14 @@ class EditTaskScreen extends HookConsumerWidget {
 
     Future<void> _submit(Task task) async {
       if (_validateAndSaveForm()) {
-        final success = await ref
-            .read(editTaskScreenControllerProvider.notifier)
-            .submit(
-                title: _title!,
-                description: _description!,
-                status: _status.value == false ? 1 : 2,
-                task: task);
+        final success =
+            await ref.read(editTaskScreenControllerProvider.notifier).submit(
+                  projectId: projectId,
+                  title: _title!,
+                  description: _description!,
+                  status: _status.value == false ? 1 : 2,
+                  task: task,
+                );
         if (success) {
           context.pop();
         }
@@ -54,11 +57,13 @@ class EditTaskScreen extends HookConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(),
-      body: ref.watch(taskStreamProvider(taskId)).when(
+      appBar: AppBar(
+        title: const Text("タスクを編集"),
+      ),
+      body: ref.watch(taskStreamProvider(projectId, taskId)).when(
             data: (data) {
-              _title = data.title;
-              _description = data.description;
+              _title = data.taskTitle;
+              _description = data.taskDescription;
               _status = useState(data.status == 1 ? false : true);
               return Center(
                 child: Form(
@@ -106,7 +111,7 @@ class EditTaskScreen extends HookConsumerWidget {
                             ),
                           ),
                           hpaddingBoxL,
-                          Text('完了済みフラグ'),
+                          const Text('完了済みフラグ'),
                           Switch(
                             value: _status.value,
                             onChanged: (value) {

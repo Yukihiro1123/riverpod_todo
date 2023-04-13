@@ -21,21 +21,7 @@ final tasksRepositoryProvider = Provider<TasksRepository>.internal(
 );
 
 typedef TasksRepositoryRef = ProviderRef<TasksRepository>;
-String _$tasksQueryHash() => r'd9a4dc9344e6baae0d8ac423bd8bf765c342bba0';
-
-/// See also [tasksQuery].
-@ProviderFor(tasksQuery)
-final tasksQueryProvider = AutoDisposeProvider<Query<Task>>.internal(
-  tasksQuery,
-  name: r'tasksQueryProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$tasksQueryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef TasksQueryRef = AutoDisposeProviderRef<Query<Task>>;
-String _$taskStreamHash() => r'90b8caa97a0cd8559f2e3028d5b83fc24f56be9b';
+String _$tasksQueryHash() => r'ffefcc0d1b86440bac22592328bdc2b3777e0392';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -58,6 +44,88 @@ class _SystemHash {
   }
 }
 
+typedef TasksQueryRef = AutoDisposeProviderRef<Query<Task>>;
+
+/// See also [tasksQuery].
+@ProviderFor(tasksQuery)
+const tasksQueryProvider = TasksQueryFamily();
+
+/// See also [tasksQuery].
+class TasksQueryFamily extends Family<Query<Task>> {
+  /// See also [tasksQuery].
+  const TasksQueryFamily();
+
+  /// See also [tasksQuery].
+  TasksQueryProvider call(
+    String projectId,
+  ) {
+    return TasksQueryProvider(
+      projectId,
+    );
+  }
+
+  @override
+  TasksQueryProvider getProviderOverride(
+    covariant TasksQueryProvider provider,
+  ) {
+    return call(
+      provider.projectId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'tasksQueryProvider';
+}
+
+/// See also [tasksQuery].
+class TasksQueryProvider extends AutoDisposeProvider<Query<Task>> {
+  /// See also [tasksQuery].
+  TasksQueryProvider(
+    this.projectId,
+  ) : super.internal(
+          (ref) => tasksQuery(
+            ref,
+            projectId,
+          ),
+          from: tasksQueryProvider,
+          name: r'tasksQueryProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$tasksQueryHash,
+          dependencies: TasksQueryFamily._dependencies,
+          allTransitiveDependencies:
+              TasksQueryFamily._allTransitiveDependencies,
+        );
+
+  final String projectId;
+
+  @override
+  bool operator ==(Object other) {
+    return other is TasksQueryProvider && other.projectId == projectId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, projectId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+String _$taskStreamHash() => r'fe9f14670ff6a9495e5ebdfdc354392347c2c91e';
 typedef TaskStreamRef = AutoDisposeStreamProviderRef<Task>;
 
 /// See also [taskStream].
@@ -71,9 +139,11 @@ class TaskStreamFamily extends Family<AsyncValue<Task>> {
 
   /// See also [taskStream].
   TaskStreamProvider call(
+    String projectId,
     String taskId,
   ) {
     return TaskStreamProvider(
+      projectId,
       taskId,
     );
   }
@@ -83,6 +153,7 @@ class TaskStreamFamily extends Family<AsyncValue<Task>> {
     covariant TaskStreamProvider provider,
   ) {
     return call(
+      provider.projectId,
       provider.taskId,
     );
   }
@@ -106,10 +177,12 @@ class TaskStreamFamily extends Family<AsyncValue<Task>> {
 class TaskStreamProvider extends AutoDisposeStreamProvider<Task> {
   /// See also [taskStream].
   TaskStreamProvider(
+    this.projectId,
     this.taskId,
   ) : super.internal(
           (ref) => taskStream(
             ref,
+            projectId,
             taskId,
           ),
           from: taskStreamProvider,
@@ -123,16 +196,20 @@ class TaskStreamProvider extends AutoDisposeStreamProvider<Task> {
               TaskStreamFamily._allTransitiveDependencies,
         );
 
+  final String projectId;
   final String taskId;
 
   @override
   bool operator ==(Object other) {
-    return other is TaskStreamProvider && other.taskId == taskId;
+    return other is TaskStreamProvider &&
+        other.projectId == projectId &&
+        other.taskId == taskId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, projectId.hashCode);
     hash = _SystemHash.combine(hash, taskId.hashCode);
 
     return _SystemHash.finish(hash);

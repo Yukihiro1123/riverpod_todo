@@ -7,10 +7,10 @@ class ScaffoldWithBottomNavBar extends HookWidget {
   const ScaffoldWithBottomNavBar({super.key, required this.child});
   @override
   Widget build(BuildContext context) {
-    const routes = {0: "tasks", 1: "feed", 2: "account"};
+    const routes = {0: "projects", 1: "feed", 2: "account"};
     int calculateSelectedIndex(BuildContext context) {
       final String location = GoRouterState.of(context).location;
-      if (location.startsWith("/tasks")) {
+      if (location.startsWith("/projects")) {
         return 0;
       }
       if (location.startsWith("/feed")) {
@@ -32,7 +32,7 @@ class ScaffoldWithBottomNavBar extends HookWidget {
           // products
           BottomNavigationBarItem(
             icon: Icon(Icons.work),
-            label: 'Tasks',
+            label: 'Projects',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.view_headline),

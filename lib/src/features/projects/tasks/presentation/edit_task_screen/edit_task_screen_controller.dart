@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
-import 'package:riverpod_todo/src/features/tasks/data/tasks_repository.dart';
-import 'package:riverpod_todo/src/features/tasks/domain/task/task.dart';
+import 'package:riverpod_todo/src/features/projects/tasks/data/tasks_repository.dart';
+import 'package:riverpod_todo/src/features/projects/tasks/domain/task/task.dart';
+
 part 'edit_task_screen_controller.g.dart';
 
 @riverpod
@@ -13,6 +14,7 @@ class EditTaskScreenController extends _$EditTaskScreenController {
   }
 
   Future<bool> submit({
+    required String projectId,
     required String title,
     required String description,
     required int status,
@@ -25,10 +27,10 @@ class EditTaskScreenController extends _$EditTaskScreenController {
     state = const AsyncLoading().copyWithPrevious(state);
     final repository = ref.read(tasksRepositoryProvider);
     state = await AsyncValue.guard(() => repository.updateTask(
-          uid: currentUser.uid,
+          projectId: projectId,
           task: task.copyWith(
-            title: title,
-            description: description,
+            taskTitle: title,
+            taskDescription: description,
             status: status,
           ),
         ));

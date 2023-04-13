@@ -2,24 +2,25 @@ import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_todo/src/features/tasks/data/tasks_repository.dart';
-import 'package:riverpod_todo/src/features/tasks/domain/task/task.dart';
-import 'package:riverpod_todo/src/features/tasks/presentation/tasks_screen/tasks_screen_controller.dart';
+import 'package:riverpod_todo/src/features/projects/data/projects_repository.dart';
+import 'package:riverpod_todo/src/features/projects/domain/project.dart';
+import 'package:riverpod_todo/src/features/projects/presentation/projects/projects_screen_controller.dart';
+
 import 'package:riverpod_todo/src/routing/app_router.dart';
 import 'package:riverpod_todo/src/utils/async_value_ui.dart';
 
-class TasksScreen extends HookConsumerWidget {
-  const TasksScreen({super.key});
+class ProjectsScreen extends HookConsumerWidget {
+  const ProjectsScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Tasks"),
+        title: const Text("Projects"),
         centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {
-              context.goNamed(AppRoute.addTask.name);
+              context.goNamed(AppRoute.addProject.name);
             },
             icon: const Icon(Icons.add),
           ),
@@ -27,23 +28,23 @@ class TasksScreen extends HookConsumerWidget {
       ),
       body: Consumer(
         builder: (context, ref, child) {
-          ref.listen<AsyncValue>(tasksScreenControllerProvider, (_, state) {
+          ref.listen<AsyncValue>(projectsScreenControllerProvider, (_, state) {
             return state.showAlertDialogOnError(context);
           });
-          final tasksQuery = ref.watch(tasksQueryProvider);
-          return FirestoreListView<Task>(
-            query: tasksQuery,
+          final projectsQuery = ref.watch(projectsQueryProvider);
+          return FirestoreListView<Project>(
+            query: projectsQuery,
             itemBuilder: (context, doc) {
-              final task = doc.data();
+              final project = doc.data();
               return Dismissible(
-                key: Key('task-${task.taskId}'),
+                key: Key('project-${project.projectId}'),
                 child: ListTile(
-                  title: Text(task.title),
+                  title: Text(project.projectTitle),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
                     context.pushNamed(
-                      AppRoute.editTask.name,
-                      params: {'id': task.taskId},
+                      AppRoute.project.name,
+                      params: {'projectId': project.projectId},
                     );
                   },
                 ),
