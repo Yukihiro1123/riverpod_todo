@@ -28,7 +28,7 @@ enum AppRoute {
   editTask,
   feed,
   account,
-  editProfile
+  editMyTask
 }
 
 @riverpod
@@ -79,18 +79,6 @@ GoRouter goRouter(GoRouterRef ref) {
             ),
             routes: [
               GoRoute(
-                path: 'add',
-                name: AppRoute.addTask.name,
-                parentNavigatorKey: _rootNavigatorKey,
-                pageBuilder: (context, state) {
-                  return MaterialPage(
-                    key: state.pageKey,
-                    fullscreenDialog: true,
-                    child: const AddTaskScreen(),
-                  );
-                },
-              ),
-              GoRoute(
                 path: ':id/edit',
                 name: AppRoute.editTask.name,
                 pageBuilder: (context, state) {
@@ -99,6 +87,18 @@ GoRouter goRouter(GoRouterRef ref) {
                     key: state.pageKey,
                     fullscreenDialog: true,
                     child: EditTaskScreen(taskId: id!),
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'add',
+                name: AppRoute.addTask.name,
+                parentNavigatorKey: _rootNavigatorKey,
+                pageBuilder: (context, state) {
+                  return MaterialPage(
+                    key: state.pageKey,
+                    fullscreenDialog: true,
+                    child: const AddTaskScreen(),
                   );
                 },
               ),
@@ -119,19 +119,20 @@ GoRouter goRouter(GoRouterRef ref) {
               key: state.pageKey,
               child: const AccountScreen(),
             ),
-            // routes: [
-            //   GoRoute(
-            //     path: ':id/edit_profile',
-            //     name: AppRoute.editProfile.name,
-            //     pageBuilder: (context, state) {
-            //       final userId = state.params['id'];
-            //       return NoTransitionPage(
-            //         key: state.pageKey,
-            //         child: EditProfileScreen(userId: userId!),
-            //       );
-            //     },
-            //   ),
-            // ],
+            routes: [
+              GoRoute(
+                path: ':id/edit',
+                name: AppRoute.editMyTask.name,
+                pageBuilder: (context, state) {
+                  final id = state.params['id'];
+                  return MaterialPage(
+                    key: state.pageKey,
+                    fullscreenDialog: true,
+                    child: EditTaskScreen(taskId: id!),
+                  );
+                },
+              ),
+            ],
           ),
         ],
       ),

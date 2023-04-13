@@ -45,7 +45,7 @@ class EditTaskScreen extends HookConsumerWidget {
             .submit(
                 title: _title!,
                 description: _description!,
-                status: _status == false ? 1 : 2,
+                status: _status.value == false ? 1 : 2,
                 task: task);
         if (success) {
           context.pop();
