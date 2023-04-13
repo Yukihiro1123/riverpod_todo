@@ -25,6 +25,14 @@ class AuthRepository {
     await _firestore.doc(usersPath(user.userId)).set(user.toJson());
   }
 
+  //get user
+  Stream<AppUser> getAppUserById() {
+    return _firestore
+        .doc(usersPath(currentUser!.uid))
+        .snapshots()
+        .map((event) => AppUser.fromJson(event.data() as Map<String, dynamic>));
+  }
+
   Future<void> signOut() => _auth.signOut();
 }
 
@@ -42,4 +50,9 @@ AuthRepository authRepository(AuthRepositoryRef ref) {
 @riverpod
 Stream<User?> authStateChanges(AuthStateChangesRef ref) {
   return ref.watch(authRepositoryProvider).authStateChanges();
+}
+
+@riverpod
+Stream<AppUser?> getAppUserById(GetAppUserByIdRef ref) {
+  return ref.watch(authRepositoryProvider).getAppUserById();
 }

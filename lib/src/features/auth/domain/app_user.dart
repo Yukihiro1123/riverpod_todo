@@ -9,6 +9,11 @@ class AppUser with _$AppUser {
     required String userId,
     required String email,
     required DateTime createdAt,
+    String? userName,
+    //プロフィール画像
+    String? imageUrl,
+    //所属しているグループ
+    @Default([]) List<String>? gruops,
   }) = _AppUser;
 
   factory AppUser.fromJson(Map<String, dynamic> json) =>

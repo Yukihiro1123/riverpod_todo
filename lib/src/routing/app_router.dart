@@ -2,7 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_todo/src/features/auth/presentation/account_screen.dart';
+import 'package:riverpod_todo/src/features/account/presentation/account_screen.dart';
+import 'package:riverpod_todo/src/features/account/presentation/edit_profile_screen.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
 import 'package:riverpod_todo/src/features/auth/presentation/auth_screen.dart';
 import 'package:riverpod_todo/src/features/feed/presentation/feed_screen.dart';
@@ -27,6 +28,7 @@ enum AppRoute {
   editTask,
   feed,
   account,
+  editProfile
 }
 
 @riverpod
@@ -111,13 +113,25 @@ GoRouter goRouter(GoRouterRef ref) {
             ),
           ),
           GoRoute(
-            path: '/account',
-            name: AppRoute.account.name,
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const AccountScreen(),
-            ),
-          ),
+              path: '/account',
+              name: AppRoute.account.name,
+              pageBuilder: (context, state) => NoTransitionPage(
+                    key: state.pageKey,
+                    child: const AccountScreen(),
+                  ),
+              routes: [
+                GoRoute(
+                  path: ':id/edit_profile',
+                  name: AppRoute.editProfile.name,
+                  pageBuilder: (context, state) {
+                    final userId = state.params['id'];
+                    return NoTransitionPage(
+                      key: state.pageKey,
+                      child: EditProfileScreen(userId: userId!),
+                    );
+                  },
+                ),
+              ]),
         ],
       ),
     ],

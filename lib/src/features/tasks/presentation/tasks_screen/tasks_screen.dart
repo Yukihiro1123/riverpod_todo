@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_todo/src/features/tasks/data/tasks_repository.dart';
 import 'package:riverpod_todo/src/features/tasks/domain/task/task.dart';
-import 'package:riverpod_todo/src/features/tasks/presentation/task_screen_controller.dart';
+import 'package:riverpod_todo/src/features/tasks/presentation/tasks_screen/tasks_screen_controller.dart';
 import 'package:riverpod_todo/src/routing/app_router.dart';
 import 'package:riverpod_todo/src/utils/async_value_ui.dart';
 

@@ -1,12 +1,16 @@
 import 'dart:async';
 
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
 import 'package:riverpod_todo/src/features/tasks/data/tasks_repository.dart';
 
 import 'package:riverpod_todo/src/features/tasks/domain/task/task.dart';
 
-class TasksScreenController extends AutoDisposeAsyncNotifier<void> {
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'tasks_screen_controller.g.dart';
+
+@riverpod
+class TasksScreenController extends _$TasksScreenController {
   @override
   FutureOr<void> build() {
     // ok to leave this empty if the return type is FutureOr<void>
@@ -37,7 +41,3 @@ class TasksScreenController extends AutoDisposeAsyncNotifier<void> {
     );
   }
 }
-
-final tasksScreenControllerProvider =
-    AutoDisposeAsyncNotifierProvider<TasksScreenController, void>(
-        TasksScreenController.new);

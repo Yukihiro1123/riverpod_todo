@@ -23,6 +23,9 @@ mixin _$AppUser {
   String get userId => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
+  String? get userName => throw _privateConstructorUsedError; //プロフィール画像
+  String? get imageUrl => throw _privateConstructorUsedError; //所属しているグループ
+  List<String>? get gruops => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -34,7 +37,13 @@ abstract class $AppUserCopyWith<$Res> {
   factory $AppUserCopyWith(AppUser value, $Res Function(AppUser) then) =
       _$AppUserCopyWithImpl<$Res, AppUser>;
   @useResult
-  $Res call({String userId, String email, DateTime createdAt});
+  $Res call(
+      {String userId,
+      String email,
+      DateTime createdAt,
+      String? userName,
+      String? imageUrl,
+      List<String>? gruops});
 }
 
 /// @nodoc
@@ -53,6 +62,9 @@ class _$AppUserCopyWithImpl<$Res, $Val extends AppUser>
     Object? userId = null,
     Object? email = null,
     Object? createdAt = null,
+    Object? userName = freezed,
+    Object? imageUrl = freezed,
+    Object? gruops = freezed,
   }) {
     return _then(_value.copyWith(
       userId: null == userId
@@ -67,6 +79,18 @@ class _$AppUserCopyWithImpl<$Res, $Val extends AppUser>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      userName: freezed == userName
+          ? _value.userName
+          : userName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      imageUrl: freezed == imageUrl
+          ? _value.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
+      gruops: freezed == gruops
+          ? _value.gruops
+          : gruops // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ) as $Val);
   }
 }
@@ -78,7 +102,13 @@ abstract class _$$_AppUserCopyWith<$Res> implements $AppUserCopyWith<$Res> {
       __$$_AppUserCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String userId, String email, DateTime createdAt});
+  $Res call(
+      {String userId,
+      String email,
+      DateTime createdAt,
+      String? userName,
+      String? imageUrl,
+      List<String>? gruops});
 }
 
 /// @nodoc
@@ -94,6 +124,9 @@ class __$$_AppUserCopyWithImpl<$Res>
     Object? userId = null,
     Object? email = null,
     Object? createdAt = null,
+    Object? userName = freezed,
+    Object? imageUrl = freezed,
+    Object? gruops = freezed,
   }) {
     return _then(_$_AppUser(
       userId: null == userId
@@ -108,6 +141,18 @@ class __$$_AppUserCopyWithImpl<$Res>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      userName: freezed == userName
+          ? _value.userName
+          : userName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      imageUrl: freezed == imageUrl
+          ? _value.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
+      gruops: freezed == gruops
+          ? _value._gruops
+          : gruops // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ));
   }
 }
@@ -116,7 +161,13 @@ class __$$_AppUserCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_AppUser implements _AppUser {
   _$_AppUser(
-      {required this.userId, required this.email, required this.createdAt});
+      {required this.userId,
+      required this.email,
+      required this.createdAt,
+      this.userName,
+      this.imageUrl,
+      final List<String>? gruops = const []})
+      : _gruops = gruops;
 
   factory _$_AppUser.fromJson(Map<String, dynamic> json) =>
       _$$_AppUserFromJson(json);
@@ -127,10 +178,27 @@ class _$_AppUser implements _AppUser {
   final String email;
   @override
   final DateTime createdAt;
+  @override
+  final String? userName;
+//プロフィール画像
+  @override
+  final String? imageUrl;
+//所属しているグループ
+  final List<String>? _gruops;
+//所属しているグループ
+  @override
+  @JsonKey()
+  List<String>? get gruops {
+    final value = _gruops;
+    if (value == null) return null;
+    if (_gruops is EqualUnmodifiableListView) return _gruops;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString() {
-    return 'AppUser(userId: $userId, email: $email, createdAt: $createdAt)';
+    return 'AppUser(userId: $userId, email: $email, createdAt: $createdAt, userName: $userName, imageUrl: $imageUrl, gruops: $gruops)';
   }
 
   @override
@@ -141,12 +209,18 @@ class _$_AppUser implements _AppUser {
             (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.userName, userName) ||
+                other.userName == userName) &&
+            (identical(other.imageUrl, imageUrl) ||
+                other.imageUrl == imageUrl) &&
+            const DeepCollectionEquality().equals(other._gruops, _gruops));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, userId, email, createdAt);
+  int get hashCode => Object.hash(runtimeType, userId, email, createdAt,
+      userName, imageUrl, const DeepCollectionEquality().hash(_gruops));
 
   @JsonKey(ignore: true)
   @override
@@ -166,7 +240,10 @@ abstract class _AppUser implements AppUser {
   factory _AppUser(
       {required final String userId,
       required final String email,
-      required final DateTime createdAt}) = _$_AppUser;
+      required final DateTime createdAt,
+      final String? userName,
+      final String? imageUrl,
+      final List<String>? gruops}) = _$_AppUser;
 
   factory _AppUser.fromJson(Map<String, dynamic> json) = _$_AppUser.fromJson;
 
@@ -176,6 +253,12 @@ abstract class _AppUser implements AppUser {
   String get email;
   @override
   DateTime get createdAt;
+  @override
+  String? get userName;
+  @override //プロフィール画像
+  String? get imageUrl;
+  @override //所属しているグループ
+  List<String>? get gruops;
   @override
   @JsonKey(ignore: true)
   _$$_AppUserCopyWith<_$_AppUser> get copyWith =>

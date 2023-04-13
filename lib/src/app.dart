@@ -91,4 +91,10 @@ class LabelOverrides extends DefaultLocalizations {
   String get wrongOrNoPasswordErrorText => 'メールアドレスもしくはパスワードが間違っています';
   @override
   String get passwordResetEmailSentText => 'パスワード再設定メールを送信いたしました';
+  @override
+  String get signOutButtonText => 'ログアウト';
+  @override
+  String get signInMethods => '';
+  @override
+  String get deleteAccount => 'アカウント削除';
 }

@@ -7,3 +7,6 @@ final buttonStyle = ButtonStyle(
     const EdgeInsets.all(20),
   ),
 );
+
+const SizedBox vpaddingBox = SizedBox(width: 10);
+const SizedBox hpaddingBox = SizedBox(height: 10);
