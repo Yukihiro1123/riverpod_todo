@@ -7,6 +7,7 @@ import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.da
 import 'package:riverpod_todo/src/features/auth/presentation/auth_screen.dart';
 import 'package:riverpod_todo/src/features/feed/presentation/feed_screen.dart';
 import 'package:riverpod_todo/src/features/projects/presentation/add_project/add_project_screen.dart';
+import 'package:riverpod_todo/src/features/projects/presentation/edit_project/edit_project_screen.dart';
 import 'package:riverpod_todo/src/features/projects/presentation/projects/projects_screen.dart';
 import 'package:riverpod_todo/src/features/projects/tasks/presentation/add_task/add_task_screen.dart';
 import 'package:riverpod_todo/src/features/projects/tasks/presentation/edit_task_screen/edit_task_screen.dart';
@@ -32,7 +33,7 @@ enum AppRoute {
   editTask,
   feed,
   account,
-  editMyTask
+  editMyTask,
 }
 
 @riverpod
@@ -95,7 +96,7 @@ GoRouter goRouter(GoRouterRef ref) {
                 },
               ),
               GoRoute(
-                path: ':projectId/tasks',
+                path: ':projectId',
                 name: AppRoute.project.name,
                 pageBuilder: (context, state) {
                   final projectId = state.params['projectId'];
@@ -105,6 +106,19 @@ GoRouter goRouter(GoRouterRef ref) {
                   );
                 },
                 routes: [
+                  GoRoute(
+                    path: 'edit_project',
+                    name: AppRoute.editProject.name,
+                    parentNavigatorKey: _rootNavigatorKey,
+                    pageBuilder: (context, state) {
+                      final projectId = state.params['projectId'];
+                      return MaterialPage(
+                        key: state.pageKey,
+                        fullscreenDialog: true,
+                        child: EditProjectScreen(projectId: projectId!),
+                      );
+                    },
+                  ),
                   GoRoute(
                     path: 'add_task',
                     name: AppRoute.addTask.name,
@@ -119,7 +133,7 @@ GoRouter goRouter(GoRouterRef ref) {
                     },
                   ),
                   GoRoute(
-                    path: ':taskId/edit_task',
+                    path: 'task/:taskId/edit_task',
                     name: AppRoute.editTask.name,
                     pageBuilder: (context, state) {
                       final projectId = state.params['projectId'];

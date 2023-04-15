@@ -23,7 +23,7 @@ class ProjectsScreenController extends _$ProjectsScreenController {
     final database = ref.read(projectsRepositoryProvider);
     state = const AsyncLoading();
     state = await AsyncValue.guard(
-      () => database.updateProject(uid: currentUser.uid, project: project),
+      () => database.updateProject(project: project),
     );
   }
 

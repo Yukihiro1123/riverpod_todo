@@ -25,7 +25,8 @@ class AccountScreen extends HookConsumerWidget {
       const Tab(child: Text('グループ')),
     ];
     final _controller = useTabController(initialLength: tabList.length);
-    return ref.watch(getAppUserByIdProvider).when(
+    final userId = ref.watch(authRepositoryProvider).currentUser!.uid;
+    return ref.watch(getAppUserByIdProvider(userId)).when(
           data: (user) {
             return Scaffold(
               appBar: AppBar(actions: [
@@ -43,7 +44,7 @@ class AccountScreen extends HookConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       vpaddingBox,
-                      Avatar(radius: 40, photoUrl: user!.imageUrl),
+                      Avatar(radius: 40, photoUrl: user.imageUrl),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

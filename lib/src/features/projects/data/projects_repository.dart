@@ -10,21 +10,18 @@ class ProjectsRepository {
   const ProjectsRepository(this._firestore);
   final FirebaseFirestore _firestore;
 
-  static String projectPath(String uid, String projectId) =>
-      'projects/$projectId';
-  static String projectsPath(String uid) => 'projects/';
+  static String projectPath(String projectId) => 'projects/$projectId';
+  static String projectsPath() => 'projects/';
 
   // create
   Future<void> addProject({required String uid, required Project project}) {
-    return _firestore
-        .doc(projectPath(uid, project.projectId))
-        .set(project.toJson());
+    return _firestore.doc(projectPath(project.projectId)).set(project.toJson());
   }
 
   // update
-  Future<void> updateProject({required String uid, required Project project}) {
+  Future<void> updateProject({required Project project}) {
     return _firestore
-        .doc(projectPath(uid, project.projectId))
+        .doc(projectPath(project.projectId))
         .update(project.toJson());
   }
 
@@ -32,7 +29,7 @@ class ProjectsRepository {
   Future<void> deleteProject(
       {required String uid, required String projectId}) async {
     // delete project
-    final projectRef = _firestore.doc(projectPath(uid, projectId));
+    final projectRef = _firestore.doc(projectPath(projectId));
     await projectRef.delete();
   }
 
@@ -40,7 +37,7 @@ class ProjectsRepository {
   Stream<Project> watchProject(
       {required String uid, required String projectId}) {
     return _firestore
-        .doc(projectPath(uid, projectId))
+        .doc(projectPath(projectId))
         .withConverter<Project>(
           fromFirestore: (snapshot, _) => Project.fromJson(snapshot.data()!),
           toFirestore: (project, _) => project.toJson(),
@@ -55,7 +52,7 @@ class ProjectsRepository {
           .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
 
   Query<Project> queryprojects({required String uid}) =>
-      _firestore.collection(projectsPath(uid)).withConverter(
+      _firestore.collection(projectsPath()).withConverter(
             fromFirestore: (snapshot, _) => Project.fromJson(snapshot.data()!),
             toFirestore: (project, _) => project.toJson(),
           );
@@ -67,8 +64,7 @@ class ProjectsRepository {
 
   Future<Project> fetchproject(
       {required String uid, required String projectId}) async {
-    final query =
-        await _firestore.collection(projectPath(uid, projectId)).get();
+    final query = await _firestore.collection(projectPath(projectId)).get();
     final Project project = Project.fromJson(query.docs[0].data());
     return project;
   }
