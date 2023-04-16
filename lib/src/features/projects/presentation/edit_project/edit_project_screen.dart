@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
@@ -7,7 +9,7 @@ import 'package:riverpod_todo/src/features/auth/domain/app_user.dart';
 import 'package:riverpod_todo/src/features/projects/data/projects_repository.dart';
 import 'package:riverpod_todo/src/features/projects/domain/project.dart';
 import 'package:riverpod_todo/src/features/projects/presentation/edit_project/edit_project_screen_controller.dart';
-import 'package:riverpod_todo/src/features/projects/tasks/data/tasks_repository.dart';
+
 import 'package:riverpod_todo/src/utils/style.dart';
 
 class EditProjectScreen extends HookConsumerWidget {
@@ -20,6 +22,11 @@ class EditProjectScreen extends HookConsumerWidget {
     String? _userId;
     String? _title;
     String? _description;
+    var _members = useState<List<String>>([]);
+    var _newMembers = useState([]);
+    final TextEditingController searchController = TextEditingController();
+    final TextEditingController foundUserNameController =
+        TextEditingController();
 
     bool _validateAndSaveForm() {
       final form = _formKey.currentState!;
@@ -30,6 +37,17 @@ class EditProjectScreen extends HookConsumerWidget {
       return false;
     }
 
+    Future<void> _searchUser(String userId) async {
+      AppUser? foundUser =
+          await ref.read(authRepositoryProvider).searchUser(userId: userId);
+      if (foundUser == null) {
+        Fluttertoast.showToast(msg: "user not found");
+        return;
+      }
+      foundUserNameController.text = foundUser.userName!;
+      print(foundUserNameController.text);
+    }
+
     Future<void> _submit(Project project) async {
       if (_validateAndSaveForm()) {
         final success =
@@ -37,6 +55,7 @@ class EditProjectScreen extends HookConsumerWidget {
                   title: _title!,
                   description: _description!,
                   project: project,
+                  members: _members.value,
                 );
         if (success) {
           context.pop();
@@ -52,6 +71,9 @@ class EditProjectScreen extends HookConsumerWidget {
             data: (data) {
               _title = data.projectTitle;
               _description = data.projectDescription;
+              if (_members.value.isEmpty) {
+                _members.value = data.members;
+              }
               //_status = useState(data.status == 1 ? false : true);
               return Center(
                 child: SizedBox(
@@ -64,40 +86,32 @@ class EditProjectScreen extends HookConsumerWidget {
                         children: [
                           const Text('タスクを編集'),
                           hpaddingBoxL,
-                          SizedBox(
-                            width: 400,
-                            child: TextFormField(
-                              decoration:
-                                  const InputDecoration(labelText: 'タイトル'),
-                              keyboardAppearance: Brightness.light,
-                              initialValue: _title,
-                              validator: (value) =>
-                                  (value ?? '').isNotEmpty ? null : '必須入力項目です',
-                              onSaved: (value) => _title = value,
-                            ),
+                          TextFormField(
+                            decoration:
+                                const InputDecoration(labelText: 'タイトル'),
+                            keyboardAppearance: Brightness.light,
+                            initialValue: _title,
+                            validator: (value) =>
+                                (value ?? '').isNotEmpty ? null : '必須入力項目です',
+                            onSaved: (value) => _title = value,
                           ),
                           hpaddingBoxL,
-                          SizedBox(
-                            width: 400,
-                            child: TextFormField(
-                              decoration:
-                                  const InputDecoration(labelText: '概要'),
-                              keyboardAppearance: Brightness.light,
-                              initialValue: _description,
-                              validator: (value) {
-                                return (value ?? '').isNotEmpty
-                                    ? null
-                                    : '必須入力項目です';
-                              },
-                              keyboardType:
-                                  const TextInputType.numberWithOptions(
-                                signed: false,
-                                decimal: false,
-                              ),
-                              onSaved: (value) {
-                                _description = _description = value;
-                              },
+                          TextFormField(
+                            decoration: const InputDecoration(labelText: '概要'),
+                            keyboardAppearance: Brightness.light,
+                            initialValue: _description,
+                            validator: (value) {
+                              return (value ?? '').isNotEmpty
+                                  ? null
+                                  : '必須入力項目です';
+                            },
+                            keyboardType: const TextInputType.numberWithOptions(
+                              signed: false,
+                              decimal: false,
                             ),
+                            onSaved: (value) {
+                              _description = _description = value;
+                            },
                           ),
                           hpaddingBoxL,
                           Text("メンバー ${data.members.length}"),
@@ -126,24 +140,80 @@ class EditProjectScreen extends HookConsumerWidget {
                               },
                             ),
                           ),
+                          const Divider(),
+                          _newMembers.value.isEmpty
+                              ? Container()
+                              : SizedBox(
+                                  width: 800,
+                                  height: 100,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: _newMembers.value.length,
+                                    itemBuilder: (context, index) {
+                                      return SizedBox(
+                                        width: 100,
+                                        child: ListTile(
+                                            title: Text(
+                                                _newMembers.value[index] ??
+                                                    "ユーザー")),
+                                      );
+                                    },
+                                  ),
+                                ),
                           const Text("メンバーを追加"),
-                          SizedBox(
-                              width: 400,
-                              child: TextFormField(
-                                initialValue: _userId,
-                                onSaved: (value) async {
-                                  await Future.delayed(
-                                    const Duration(seconds: 1),
-                                  );
-                                  _userId = value;
+                          /* ユーザー検索 */
+                          TextFormField(
+                            controller: searchController,
+                            decoration: InputDecoration(
+                                suffixIcon: IconButton(
+                              icon: const Icon(Icons.search),
+                              onPressed: () {
+                                _searchUser(searchController.text);
+                              },
+                            )),
+                            onSaved: (value) {
+                              _userId = value;
+                            },
+                          ),
+                          hpaddingBox,
+                          /* 検索結果 */
+                          TextFormField(
+                            readOnly: true,
+                            controller: foundUserNameController,
+                          ),
+                          hpaddingBox,
+                          /* 追加ボタン*/
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: IconButton(
+                                onPressed: () {
+                                  if (foundUserNameController.text != "" &&
+                                      !_newMembers.value.contains(
+                                          foundUserNameController.text)) {
+                                    _newMembers.value = [
+                                      ..._newMembers.value,
+                                      foundUserNameController.text
+                                    ];
+                                    _members.value = [
+                                      ..._members.value,
+                                      searchController.text
+                                    ];
+                                    print(" the member is ${_members.value}");
+                                  }
+                                  foundUserNameController.clear();
                                 },
-                              )),
+                                icon: const Icon(Icons.add)),
+                          ),
+                          /* 更新ボタン */
                           hpaddingBoxL,
                           SizedBox(
                             width: 300,
                             height: 50,
                             child: ElevatedButton(
                               onPressed: () {
+                                print("original members ${data.members}");
+                                print(
+                                    "The members are ${_members.value} type is ${_members.value.runtimeType}");
                                 _submit(data);
                               },
                               child: const Text(

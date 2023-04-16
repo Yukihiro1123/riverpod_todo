@@ -33,13 +33,16 @@ class AuthRepository {
         .map((event) => AppUser.fromJson(event.data() as Map<String, dynamic>));
   }
 
-  Query<AppUser> queryAppUsers({required String userId}) =>
-      _firestore.collection(usersPath(userId)).withConverter(
-            fromFirestore: (snapshot, _) => AppUser.fromJson(snapshot.data()!),
-            toFirestore: (task, _) => task.toJson(),
-          );
-
   Future<void> signOut() => _auth.signOut();
+
+  Future<AppUser?> searchUser({required String userId}) async {
+    final query = await _firestore
+        .collection("users")
+        .where("userId", isEqualTo: userId)
+        .get();
+    if (query.docs.isEmpty) return null;
+    return AppUser.fromJson(query.docs[0].data());
+  }
 }
 
 @Riverpod(keepAlive: true)

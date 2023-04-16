@@ -15,6 +15,7 @@ class EditProjectScreenController extends _$EditProjectScreenController {
     required String title,
     required String description,
     required Project project,
+    required List<String> members,
   }) async {
     final currentUser = ref.read(authRepositoryProvider).currentUser;
     if (currentUser == null) {
@@ -26,6 +27,7 @@ class EditProjectScreenController extends _$EditProjectScreenController {
           project: project.copyWith(
             projectTitle: title,
             projectDescription: description,
+            members: members,
           ),
         ));
     return state.hasError == false;
