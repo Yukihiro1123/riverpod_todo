@@ -96,7 +96,7 @@ class TasksScreen extends HookConsumerWidget {
                                 title: Text(task.taskTitle),
                                 trailing: const Icon(Icons.chevron_right),
                                 onTap: () {
-                                  context.pushNamed(
+                                  context.goNamed(
                                     AppRoute.editTask.name,
                                     params: {
                                       'projectId': projectId,

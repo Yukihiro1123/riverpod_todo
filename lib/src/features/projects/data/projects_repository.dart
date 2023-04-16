@@ -51,11 +51,13 @@ class ProjectsRepository {
           .snapshots()
           .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
 
-  Query<Project> queryprojects({required String uid}) =>
-      _firestore.collection(projectsPath()).withConverter(
-            fromFirestore: (snapshot, _) => Project.fromJson(snapshot.data()!),
-            toFirestore: (project, _) => project.toJson(),
-          );
+  Query<Project> queryprojects({required String uid}) => _firestore
+      .collection(projectsPath())
+      .where("members", arrayContains: uid)
+      .withConverter(
+        fromFirestore: (snapshot, _) => Project.fromJson(snapshot.data()!),
+        toFirestore: (project, _) => project.toJson(),
+      );
 
   // Future<List<project>> fetchprojects({required String uid}) async {
   //   final query = await queryprojects(uid: uid).get();

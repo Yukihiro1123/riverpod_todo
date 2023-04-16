@@ -9,6 +9,9 @@ import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
 import 'package:riverpod_todo/src/features/account/presentation/edit_profile_screen.dart';
 import 'package:riverpod_todo/src/features/account/presentation/my_task_list_part.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
+import 'package:riverpod_todo/src/features/projects/data/projects_repository.dart';
+import 'package:riverpod_todo/src/features/projects/domain/project.dart';
+import 'package:riverpod_todo/src/features/projects/presentation/projects/projects_screen_controller.dart';
 
 import 'package:riverpod_todo/src/routing/app_router.dart';
 import 'package:riverpod_todo/src/utils/async_value_ui.dart';
@@ -56,7 +59,7 @@ class AccountScreen extends HookConsumerWidget {
                       vpaddingBox,
                       ElevatedButton(
                         onPressed: () {
-                          // context.pushNamed(AppRoute.editProfile.name,
+                          // context.goNamed(AppRoute.editProfile.name,
                           //     params: {"id": user.userId});
                           showDialog(
                               context: context,
@@ -91,10 +94,35 @@ class AccountScreen extends HookConsumerWidget {
                       physics: const NeverScrollableScrollPhysics(),
 
                       /// タブに表示したいWidgetをchildrenに記載する
-                      children: const [
+                      children: [
                         MyTaskListPart(status: 1),
                         MyTaskListPart(status: 2),
-                        Center(child: Text('Groups')),
+                        Consumer(
+                          builder: (context, ref, child) {
+                            ref.listen<AsyncValue>(
+                                projectsScreenControllerProvider, (_, state) {
+                              return state.showAlertDialogOnError(context);
+                            });
+                            final projectsQuery =
+                                ref.watch(projectsQueryProvider);
+                            return FirestoreListView<Project>(
+                              query: projectsQuery,
+                              itemBuilder: (context, doc) {
+                                final project = doc.data();
+                                return ListTile(
+                                  title: Text(project.projectTitle),
+                                  trailing: const Icon(Icons.chevron_right),
+                                  onTap: () {
+                                    context.goNamed(
+                                      AppRoute.project.name,
+                                      params: {'projectId': project.projectId},
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ],
                     ),
                   ),

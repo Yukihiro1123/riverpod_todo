@@ -32,7 +32,7 @@ class MyTaskListPart extends HookConsumerWidget {
         //             title: Text(task.taskTitle),
         //             trailing: const Icon(Icons.chevron_right),
         //             onTap: () {
-        //               context.pushNamed(
+        //               context.goNamed(
         //                 AppRoute.editMyTask.name,
         //                 params: {'id': task.taskId},
         //               );

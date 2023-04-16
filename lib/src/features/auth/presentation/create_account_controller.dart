@@ -21,6 +21,7 @@ class EditAccountController extends AutoDisposeAsyncNotifier<void> {
       throw AssertionError('User can\'t be null');
     }
     AppUser appUser = AppUser(
+      userName: "アカウント",
       userId: currentUser.uid,
       email: user.email!,
       createdAt: DateTime.now(),

@@ -36,18 +36,15 @@ class ProjectsScreen extends HookConsumerWidget {
             query: projectsQuery,
             itemBuilder: (context, doc) {
               final project = doc.data();
-              return Dismissible(
-                key: Key('project-${project.projectId}'),
-                child: ListTile(
-                  title: Text(project.projectTitle),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    context.pushNamed(
-                      AppRoute.project.name,
-                      params: {'projectId': project.projectId},
-                    );
-                  },
-                ),
+              return ListTile(
+                title: Text(project.projectTitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  context.goNamed(
+                    AppRoute.project.name,
+                    params: {'projectId': project.projectId},
+                  );
+                },
               );
             },
           );
