@@ -53,7 +53,9 @@ class EditProfileScreen extends HookConsumerWidget {
                           validator: (value) =>
                               (value ?? '').isNotEmpty ? null : '必須入力項目です',
                           initialValue: _userName.value,
-                          onSaved: (value) => _userName.value = value!,
+                          onChanged: (value) {
+                            _userName.value = value;
+                          },
                         ),
                       ),
                     ],
