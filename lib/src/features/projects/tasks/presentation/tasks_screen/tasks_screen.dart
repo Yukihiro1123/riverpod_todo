@@ -44,10 +44,10 @@ class TasksScreen extends HookConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.3,
+                          width: MediaQuery.of(context).size.width * 0.4,
                           height: MediaQuery.of(context).size.height * 0.1,
                           child: SingleChildScrollView(
-                            child: Container(
+                            child: SizedBox(
                               child: Linkify(
                                 text: data.projectDescription,
                                 onOpen: (link) {
@@ -66,52 +66,46 @@ class TasksScreen extends HookConsumerWidget {
                               onPressed: () {
                                 context.goNamed(AppRoute.editProject.name,
                                     params: {"projectId": projectId});
-                                //メンバー追加処理 projectのメンバーの箇所をアップデートする
-                                //メンバーリストと検索フォーム付きdialogが出てきて、ユーザーを検索する
-                                //フォームの横の追加ボタンでメンバーを追加
                               },
                             ),
-                            hpaddingBox,
-                            Align(
-                              alignment: Alignment.topRight,
-                              child: Column(
-                                children: [
-                                  Text('${data.members.length}人のメンバー'),
-                                  hpaddingBox,
-                                  SizedBox(
-                                    width: 300,
-                                    height: 60,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: data.members.length,
-                                      itemBuilder: (context, index) {
-                                        final userNames = ref.watch(
-                                            getAppUserByIdProvider(
-                                                data.members[index]));
-                                        return userNames.when(
-                                          data: (AppUser? data) {
-                                            return Tooltip(
-                                              message: data!.userName,
-                                              child: Avatar(
-                                                  radius: 25,
-                                                  photoUrl: data.imageUrl),
-                                            );
-                                          },
-                                          error: (error, stackTrace) {
-                                            print(error);
-                                            return const EmptyContent();
-                                          },
-                                          loading: () => const Center(
-                                              child:
-                                                  CircularProgressIndicator()),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                           ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  hpaddingBox,
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Column(
+                      children: [
+                        Text('${data.members.length}人のメンバー'),
+                        hpaddingBox,
+                        SizedBox(
+                          width: 60 * (data.members.length).toDouble(),
+                          height: 60,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: data.members.length,
+                            itemBuilder: (context, index) {
+                              final userNames = ref.watch(
+                                  getAppUserByIdProvider(data.members[index]));
+                              return userNames.when(
+                                data: (AppUser? data) {
+                                  return Tooltip(
+                                    message: data!.userName,
+                                    child: Avatar(
+                                        radius: 25, photoUrl: data.imageUrl),
+                                  );
+                                },
+                                error: (error, stackTrace) {
+                                  print(error);
+                                  return const EmptyContent();
+                                },
+                                loading: () => const Center(
+                                    child: CircularProgressIndicator()),
+                              );
+                            },
+                          ),
                         ),
                       ],
                     ),
