@@ -23,7 +23,7 @@ class EditProjectScreen extends HookConsumerWidget {
     String? _title;
     String? _description;
     var _members = useState<List<String>>([]);
-    var _newMembers = useState([]);
+    var _newMembers = useState<List<String>>([]);
     final TextEditingController searchController = TextEditingController();
     final TextEditingController foundUserNameController =
         TextEditingController();
@@ -115,20 +115,43 @@ class EditProjectScreen extends HookConsumerWidget {
                           ),
                           hpaddingBoxL,
                           Text("メンバー ${data.members.length}"),
+                          /* 現在のメンバー */
                           SizedBox(
                             width: 300,
                             height: 100,
                             child: ListView.builder(
-                              itemCount: data.members.length,
+                              itemCount: _members.value.length,
                               itemBuilder: (context, index) {
                                 final userNames = ref.watch(
                                     getAppUserByIdProvider(
-                                        data.members[index]));
+                                        _members.value[index]));
                                 return userNames.when(
                                   data: (AppUser? data) {
                                     print("The data is $data");
                                     return ListTile(
-                                        title: Text(data?.userName ?? "ユーザー"));
+                                      title: Text(data?.userName ?? "ユーザー"),
+                                      /* メンバーから省く */
+                                      trailing: IconButton(
+                                        icon: const Icon(Icons.remove),
+                                        onPressed: () {
+                                          if (_members.value.length == 1) {
+                                            Fluttertoast.showToast(msg: "やめろ");
+                                            return;
+                                          }
+                                          List<String> updatedList =
+                                              List.from(_members.value);
+                                          updatedList.removeAt(index);
+                                          _members.value = updatedList;
+                                          List<String> updatedNewMemberList =
+                                              List.from(_newMembers.value);
+                                          updatedNewMemberList
+                                              .remove(data!.userName);
+                                          _newMembers.value =
+                                              updatedNewMemberList;
+                                          print(_newMembers.value);
+                                        },
+                                      ),
+                                    );
                                   },
                                   error: (error, stackTrace) {
                                     print(error);
