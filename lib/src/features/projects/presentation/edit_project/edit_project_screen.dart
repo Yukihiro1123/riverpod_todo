@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
 import 'package:riverpod_todo/src/features/auth/domain/app_user.dart';
+import 'package:riverpod_todo/src/features/projects/common_widgets/search_user_part.dart';
 import 'package:riverpod_todo/src/features/projects/data/projects_repository.dart';
 import 'package:riverpod_todo/src/features/projects/domain/project.dart';
 import 'package:riverpod_todo/src/features/projects/presentation/edit_project/edit_project_screen_controller.dart';
@@ -19,7 +20,6 @@ class EditProjectScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final _formKey = GlobalKey<FormState>();
-    String? _userId;
     String? _title;
     String? _description;
     var _members = useState<List<String>>([]);
@@ -68,18 +68,6 @@ class EditProjectScreen extends HookConsumerWidget {
       updatedNewMemberList.remove(data.userName);
       _newMembers.value = updatedNewMemberList;
       print(_newMembers.value);
-    }
-
-    Future<void> _searchUser(String userId) async {
-      AppUser? foundUser =
-          await ref.read(authRepositoryProvider).searchUser(userId: userId);
-      if (foundUser == null) {
-        Fluttertoast.showToast(msg: "user not found");
-        return;
-      }
-      foundUserNameController.text = foundUser.userName!;
-      foundUserIdController.text = userId;
-      print(foundUserNameController.text);
     }
 
     Future<void> _submit(Project project) async {
@@ -188,42 +176,19 @@ class EditProjectScreen extends HookConsumerWidget {
                                 child: Text("メンバーを追加")),
                             hpaddingBox,
                             /* ユーザー検索 */
-                            Column(
-                              children: [
-                                TextFormField(
-                                  controller: searchController,
-                                  decoration: InputDecoration(
-                                      label: const Text("ユーザーIDで検索"),
-                                      suffixIcon: IconButton(
-                                        icon: const Icon(Icons.search),
-                                        onPressed: () {
-                                          _searchUser(searchController.text);
-                                        },
-                                      )),
-                                  onSaved: (value) {
-                                    _userId = value;
+                            SearchUserPart(
+                              searchController: searchController,
+                              foundUserIdController: foundUserIdController,
+                              foundUserNameController: foundUserNameController,
+                            ),
+                            /* ユーザー追加 */
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: IconButton(
+                                  onPressed: () {
+                                    _addMember();
                                   },
-                                ),
-                                hpaddingBox,
-                                /* 検索結果 */
-                                TextFormField(
-                                  decoration: const InputDecoration(
-                                    border: InputBorder.none,
-                                  ),
-                                  readOnly: true,
-                                  controller: foundUserNameController,
-                                ),
-                                hpaddingBox,
-                                /* 追加ボタン*/
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: IconButton(
-                                      onPressed: () {
-                                        _addMember();
-                                      },
-                                      icon: const Icon(Icons.add)),
-                                ),
-                              ],
+                                  icon: const Icon(Icons.add)),
                             ),
                             /* 更新ボタン */
                             hpaddingBoxL,
