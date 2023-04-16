@@ -7,7 +7,7 @@ part 'task.g.dart';
 class Task with _$Task {
   factory Task({
     required String taskId,
-    required List<String> userId,
+    required List<String> members,
     required String taskTitle,
     required String taskDescription,
     required DateTime createdAt,

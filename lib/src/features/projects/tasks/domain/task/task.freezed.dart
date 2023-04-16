@@ -21,7 +21,7 @@ Task _$TaskFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Task {
   String get taskId => throw _privateConstructorUsedError;
-  List<String> get userId => throw _privateConstructorUsedError;
+  List<String> get members => throw _privateConstructorUsedError;
   String get taskTitle => throw _privateConstructorUsedError;
   String get taskDescription => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
@@ -40,7 +40,7 @@ abstract class $TaskCopyWith<$Res> {
   @useResult
   $Res call(
       {String taskId,
-      List<String> userId,
+      List<String> members,
       String taskTitle,
       String taskDescription,
       DateTime createdAt,
@@ -62,7 +62,7 @@ class _$TaskCopyWithImpl<$Res, $Val extends Task>
   @override
   $Res call({
     Object? taskId = null,
-    Object? userId = null,
+    Object? members = null,
     Object? taskTitle = null,
     Object? taskDescription = null,
     Object? createdAt = null,
@@ -74,9 +74,9 @@ class _$TaskCopyWithImpl<$Res, $Val extends Task>
           ? _value.taskId
           : taskId // ignore: cast_nullable_to_non_nullable
               as String,
-      userId: null == userId
-          ? _value.userId
-          : userId // ignore: cast_nullable_to_non_nullable
+      members: null == members
+          ? _value.members
+          : members // ignore: cast_nullable_to_non_nullable
               as List<String>,
       taskTitle: null == taskTitle
           ? _value.taskTitle
@@ -110,7 +110,7 @@ abstract class _$$_TaskCopyWith<$Res> implements $TaskCopyWith<$Res> {
   @useResult
   $Res call(
       {String taskId,
-      List<String> userId,
+      List<String> members,
       String taskTitle,
       String taskDescription,
       DateTime createdAt,
@@ -128,7 +128,7 @@ class __$$_TaskCopyWithImpl<$Res> extends _$TaskCopyWithImpl<$Res, _$_Task>
   @override
   $Res call({
     Object? taskId = null,
-    Object? userId = null,
+    Object? members = null,
     Object? taskTitle = null,
     Object? taskDescription = null,
     Object? createdAt = null,
@@ -140,9 +140,9 @@ class __$$_TaskCopyWithImpl<$Res> extends _$TaskCopyWithImpl<$Res, _$_Task>
           ? _value.taskId
           : taskId // ignore: cast_nullable_to_non_nullable
               as String,
-      userId: null == userId
-          ? _value._userId
-          : userId // ignore: cast_nullable_to_non_nullable
+      members: null == members
+          ? _value._members
+          : members // ignore: cast_nullable_to_non_nullable
               as List<String>,
       taskTitle: null == taskTitle
           ? _value.taskTitle
@@ -173,24 +173,24 @@ class __$$_TaskCopyWithImpl<$Res> extends _$TaskCopyWithImpl<$Res, _$_Task>
 class _$_Task implements _Task {
   _$_Task(
       {required this.taskId,
-      required final List<String> userId,
+      required final List<String> members,
       required this.taskTitle,
       required this.taskDescription,
       required this.createdAt,
       required this.status,
       required this.projectId})
-      : _userId = userId;
+      : _members = members;
 
   factory _$_Task.fromJson(Map<String, dynamic> json) => _$$_TaskFromJson(json);
 
   @override
   final String taskId;
-  final List<String> _userId;
+  final List<String> _members;
   @override
-  List<String> get userId {
-    if (_userId is EqualUnmodifiableListView) return _userId;
+  List<String> get members {
+    if (_members is EqualUnmodifiableListView) return _members;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_userId);
+    return EqualUnmodifiableListView(_members);
   }
 
   @override
@@ -207,7 +207,7 @@ class _$_Task implements _Task {
 
   @override
   String toString() {
-    return 'Task(taskId: $taskId, userId: $userId, taskTitle: $taskTitle, taskDescription: $taskDescription, createdAt: $createdAt, status: $status, projectId: $projectId)';
+    return 'Task(taskId: $taskId, members: $members, taskTitle: $taskTitle, taskDescription: $taskDescription, createdAt: $createdAt, status: $status, projectId: $projectId)';
   }
 
   @override
@@ -216,7 +216,7 @@ class _$_Task implements _Task {
         (other.runtimeType == runtimeType &&
             other is _$_Task &&
             (identical(other.taskId, taskId) || other.taskId == taskId) &&
-            const DeepCollectionEquality().equals(other._userId, _userId) &&
+            const DeepCollectionEquality().equals(other._members, _members) &&
             (identical(other.taskTitle, taskTitle) ||
                 other.taskTitle == taskTitle) &&
             (identical(other.taskDescription, taskDescription) ||
@@ -233,7 +233,7 @@ class _$_Task implements _Task {
   int get hashCode => Object.hash(
       runtimeType,
       taskId,
-      const DeepCollectionEquality().hash(_userId),
+      const DeepCollectionEquality().hash(_members),
       taskTitle,
       taskDescription,
       createdAt,
@@ -257,7 +257,7 @@ class _$_Task implements _Task {
 abstract class _Task implements Task {
   factory _Task(
       {required final String taskId,
-      required final List<String> userId,
+      required final List<String> members,
       required final String taskTitle,
       required final String taskDescription,
       required final DateTime createdAt,
@@ -269,7 +269,7 @@ abstract class _Task implements Task {
   @override
   String get taskId;
   @override
-  List<String> get userId;
+  List<String> get members;
   @override
   String get taskTitle;
   @override

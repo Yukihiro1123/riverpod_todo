@@ -30,7 +30,7 @@ class AddTaskScreenController extends _$AddTaskScreenController {
           task: Task(
             projectId: projectId,
             taskId: const Uuid().v4(),
-            userId: [currentUser.uid],
+            members: [currentUser.uid],
             taskTitle: title,
             taskDescription: description,
             createdAt: DateTime.now(),
