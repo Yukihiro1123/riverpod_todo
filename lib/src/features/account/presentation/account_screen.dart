@@ -1,5 +1,6 @@
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -91,12 +92,13 @@ class AccountScreen extends HookConsumerWidget {
                     /// タブの中身を表示するWidget
                     child: TabBarView(
                       controller: _controller,
-                      physics: const NeverScrollableScrollPhysics(),
+                      physics:
+                          kIsWeb ? const NeverScrollableScrollPhysics() : null,
 
                       /// タブに表示したいWidgetをchildrenに記載する
                       children: [
-                        MyTaskListPart(status: 1),
-                        MyTaskListPart(status: 2),
+                        MyTaskListPart(userId: userId, status: 1),
+                        MyTaskListPart(userId: userId, status: 2),
                         Consumer(
                           builder: (context, ref, child) {
                             ref.listen<AsyncValue>(

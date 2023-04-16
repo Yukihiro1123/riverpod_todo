@@ -125,6 +125,88 @@ class TasksQueryProvider extends AutoDisposeProvider<Query<Task>> {
   }
 }
 
+String _$myTasksQueryHash() => r'88d3ce1252525d804f0d451cb536b0d2df6c3d82';
+typedef MyTasksQueryRef = AutoDisposeProviderRef<Query<Task>>;
+
+/// See also [myTasksQuery].
+@ProviderFor(myTasksQuery)
+const myTasksQueryProvider = MyTasksQueryFamily();
+
+/// See also [myTasksQuery].
+class MyTasksQueryFamily extends Family<Query<Task>> {
+  /// See also [myTasksQuery].
+  const MyTasksQueryFamily();
+
+  /// See also [myTasksQuery].
+  MyTasksQueryProvider call(
+    int status,
+  ) {
+    return MyTasksQueryProvider(
+      status,
+    );
+  }
+
+  @override
+  MyTasksQueryProvider getProviderOverride(
+    covariant MyTasksQueryProvider provider,
+  ) {
+    return call(
+      provider.status,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'myTasksQueryProvider';
+}
+
+/// See also [myTasksQuery].
+class MyTasksQueryProvider extends AutoDisposeProvider<Query<Task>> {
+  /// See also [myTasksQuery].
+  MyTasksQueryProvider(
+    this.status,
+  ) : super.internal(
+          (ref) => myTasksQuery(
+            ref,
+            status,
+          ),
+          from: myTasksQueryProvider,
+          name: r'myTasksQueryProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$myTasksQueryHash,
+          dependencies: MyTasksQueryFamily._dependencies,
+          allTransitiveDependencies:
+              MyTasksQueryFamily._allTransitiveDependencies,
+        );
+
+  final int status;
+
+  @override
+  bool operator ==(Object other) {
+    return other is MyTasksQueryProvider && other.status == status;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, status.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
 String _$taskStreamHash() => r'fe9f14670ff6a9495e5ebdfdc354392347c2c91e';
 typedef TaskStreamRef = AutoDisposeStreamProviderRef<Task>;
 

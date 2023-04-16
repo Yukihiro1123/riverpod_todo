@@ -7,7 +7,7 @@ part of 'edit_project_screen_controller.dart';
 // **************************************************************************
 
 String _$editProjectScreenControllerHash() =>
-    r'0607e74879d1e4945def074efd06a9f5e8074d01';
+    r'1e1111e241e53e008465ab42a6c07cfa0687d600';
 
 /// See also [EditProjectScreenController].
 @ProviderFor(EditProjectScreenController)

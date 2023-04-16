@@ -10,39 +10,43 @@ import 'package:riverpod_todo/src/routing/app_router.dart';
 import 'package:riverpod_todo/src/utils/async_value_ui.dart';
 
 class MyTaskListPart extends HookConsumerWidget {
+  final String userId;
   final int status;
-  const MyTaskListPart({super.key, required this.status});
+  const MyTaskListPart({super.key, required this.status, required this.userId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-        // body: Consumer(
-        //   builder: (context, ref, child) {
-        //     ref.listen<AsyncValue>(tasksScreenControllerProvider, (_, state) {
-        //       return state.showAlertDialogOnError(context);
-        //     });
-        //     final tasksQuery = ref.watch(tasksQueryProvider);
-        //     return FirestoreListView<Task>(
-        //       query: tasksQuery.where("status", isEqualTo: status),
-        //       itemBuilder: (context, doc) {
-        //         final task = doc.data();
-        //         return Dismissible(
-        //           key: Key('task-${task.taskId}'),
-        //           child: ListTile(
-        //             title: Text(task.taskTitle),
-        //             trailing: const Icon(Icons.chevron_right),
-        //             onTap: () {
-        //               context.goNamed(
-        //                 AppRoute.editMyTask.name,
-        //                 params: {'id': task.taskId},
-        //               );
-        //             },
-        //           ),
-        //         );
-        //       },
-        //     );
-        //   },
-        // ),
-        );
+      body: Consumer(
+        builder: (context, ref, child) {
+          ref.listen<AsyncValue>(tasksScreenControllerProvider, (_, state) {
+            return state.showAlertDialogOnError(context);
+          });
+          final myTasksQuery = ref.watch(myTasksQueryProvider(status));
+          return FirestoreListView<Task>(
+            query: myTasksQuery,
+            itemBuilder: (context, doc) {
+              final task = doc.data();
+              return Dismissible(
+                key: Key('task-${task.taskId}'),
+                child: ListTile(
+                  title: Text(task.taskTitle),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    context.goNamed(
+                      AppRoute.editTask.name,
+                      params: {
+                        'projectId': task.projectId,
+                        'taskId': task.taskId
+                      },
+                    );
+                  },
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
   }
 }

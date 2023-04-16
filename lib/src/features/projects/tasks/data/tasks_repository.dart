@@ -68,6 +68,19 @@ class TasksRepository {
     final Task task = Task.fromJson(query.docs[0].data());
     return task;
   }
+
+  Query<Task> queryMyTasks({
+    required String uid,
+    required int status,
+  }) =>
+      _firestore
+          .collectionGroup("tasks")
+          .where("userId", arrayContains: uid)
+          .where("status", isEqualTo: status)
+          .withConverter(
+            fromFirestore: (snapshot, _) => Task.fromJson(snapshot.data()!),
+            toFirestore: (task, _) => task.toJson(),
+          );
 }
 
 @Riverpod(keepAlive: true)
@@ -83,6 +96,16 @@ Query<Task> tasksQuery(TasksQueryRef ref, String projectId) {
   }
   final repository = ref.watch(tasksRepositoryProvider);
   return repository.queryTasks(projectId: projectId);
+}
+
+@riverpod
+Query<Task> myTasksQuery(TasksQueryRef ref, int status) {
+  final user = ref.watch(firebaseAuthProvider).currentUser;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final repository = ref.watch(tasksRepositoryProvider);
+  return repository.queryMyTasks(uid: user.uid, status: status);
 }
 
 @riverpod

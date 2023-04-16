@@ -33,7 +33,6 @@ enum AppRoute {
   editTask,
   feed,
   account,
-  editMyTask,
 }
 
 @riverpod
@@ -164,21 +163,6 @@ GoRouter goRouter(GoRouterRef ref) {
               key: state.pageKey,
               child: const AccountScreen(),
             ),
-            routes: [
-              GoRoute(
-                path: ':taskId/edit_my_task',
-                name: AppRoute.editMyTask.name,
-                pageBuilder: (context, state) {
-                  final projectId = state.params['projectId'];
-                  final taskId = state.params['taskId'];
-                  return NoTransitionPage(
-                    key: state.pageKey,
-                    child:
-                        EditTaskScreen(projectId: projectId!, taskId: taskId!),
-                  );
-                },
-              ),
-            ],
           ),
         ],
       ),
