@@ -24,7 +24,9 @@ class EditProjectScreen extends HookConsumerWidget {
     String? _description;
     var _members = useState<List<String>>([]);
     var _newMembers = useState<List<String>>([]);
+
     final TextEditingController searchController = TextEditingController();
+    final TextEditingController foundUserIdController = TextEditingController();
     final TextEditingController foundUserNameController =
         TextEditingController();
 
@@ -37,6 +39,37 @@ class EditProjectScreen extends HookConsumerWidget {
       return false;
     }
 
+    void _addMember() {
+      if (foundUserNameController.text != "" &&
+          !_newMembers.value.contains(foundUserNameController.text) &&
+          !_members.value.contains(foundUserIdController.text)) {
+        _newMembers.value = [
+          ..._newMembers.value,
+          foundUserNameController.text
+        ];
+        _members.value = [..._members.value, foundUserIdController.text];
+
+        print(" the member is ${_members.value}");
+      }
+      foundUserIdController.clear();
+      foundUserNameController.clear();
+      searchController.clear();
+    }
+
+    void _removeMember(int index, AppUser data) {
+      if (_members.value.length == 1) {
+        Fluttertoast.showToast(msg: "やめろ");
+        return;
+      }
+      List<String> updatedList = List.from(_members.value);
+      updatedList.removeAt(index);
+      _members.value = updatedList;
+      List<String> updatedNewMemberList = List.from(_newMembers.value);
+      updatedNewMemberList.remove(data.userName);
+      _newMembers.value = updatedNewMemberList;
+      print(_newMembers.value);
+    }
+
     Future<void> _searchUser(String userId) async {
       AppUser? foundUser =
           await ref.read(authRepositoryProvider).searchUser(userId: userId);
@@ -45,6 +78,7 @@ class EditProjectScreen extends HookConsumerWidget {
         return;
       }
       foundUserNameController.text = foundUser.userName!;
+      foundUserIdController.text = userId;
       print(foundUserNameController.text);
     }
 
@@ -74,178 +108,144 @@ class EditProjectScreen extends HookConsumerWidget {
               if (_members.value.isEmpty) {
                 _members.value = data.members;
               }
-              //_status = useState(data.status == 1 ? false : true);
               return Center(
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.9,
-                  child: Form(
-                    key: _formKey,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          const Text('タスクを編集'),
-                          hpaddingBoxL,
-                          TextFormField(
-                            decoration:
-                                const InputDecoration(labelText: 'タイトル'),
-                            keyboardAppearance: Brightness.light,
-                            initialValue: _title,
-                            validator: (value) =>
-                                (value ?? '').isNotEmpty ? null : '必須入力項目です',
-                            onSaved: (value) => _title = value,
-                          ),
-                          hpaddingBoxL,
-                          TextFormField(
-                            decoration: const InputDecoration(labelText: '概要'),
-                            keyboardAppearance: Brightness.light,
-                            initialValue: _description,
-                            validator: (value) {
-                              return (value ?? '').isNotEmpty
-                                  ? null
-                                  : '必須入力項目です';
-                            },
-                            keyboardType: const TextInputType.numberWithOptions(
-                              signed: false,
-                              decimal: false,
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: _formKey,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            const Text('プロジェクトを編集'),
+                            hpaddingBoxL,
+                            TextFormField(
+                              decoration:
+                                  const InputDecoration(labelText: 'タイトル'),
+                              keyboardAppearance: Brightness.light,
+                              initialValue: _title,
+                              validator: (value) =>
+                                  (value ?? '').isNotEmpty ? null : '必須入力項目です',
+                              onSaved: (value) => _title = value,
                             ),
-                            onSaved: (value) {
-                              _description = _description = value;
-                            },
-                          ),
-                          hpaddingBoxL,
-                          Text("メンバー ${data.members.length}"),
-                          /* 現在のメンバー */
-                          SizedBox(
-                            width: 300,
-                            height: 100,
-                            child: ListView.builder(
-                              itemCount: _members.value.length,
-                              itemBuilder: (context, index) {
-                                final userNames = ref.watch(
-                                    getAppUserByIdProvider(
-                                        _members.value[index]));
-                                return userNames.when(
-                                  data: (AppUser? data) {
-                                    print("The data is $data");
-                                    return ListTile(
-                                      title: Text(data?.userName ?? "ユーザー"),
-                                      /* メンバーから省く */
-                                      trailing: IconButton(
-                                        icon: const Icon(Icons.remove),
-                                        onPressed: () {
-                                          if (_members.value.length == 1) {
-                                            Fluttertoast.showToast(msg: "やめろ");
-                                            return;
-                                          }
-                                          List<String> updatedList =
-                                              List.from(_members.value);
-                                          updatedList.removeAt(index);
-                                          _members.value = updatedList;
-                                          List<String> updatedNewMemberList =
-                                              List.from(_newMembers.value);
-                                          updatedNewMemberList
-                                              .remove(data!.userName);
-                                          _newMembers.value =
-                                              updatedNewMemberList;
-                                          print(_newMembers.value);
-                                        },
-                                      ),
-                                    );
-                                  },
-                                  error: (error, stackTrace) {
-                                    print(error);
-                                    return const EmptyContent();
-                                  },
-                                  loading: () => const Center(
-                                      child: CircularProgressIndicator()),
-                                );
+                            hpaddingBoxL,
+                            TextFormField(
+                              maxLines: 10,
+                              decoration:
+                                  const InputDecoration(labelText: '概要'),
+                              keyboardAppearance: Brightness.light,
+                              initialValue: _description,
+                              validator: (value) {
+                                return (value ?? '').isNotEmpty
+                                    ? null
+                                    : '必須入力項目です';
+                              },
+                              keyboardType: TextInputType.multiline,
+                              onSaved: (value) {
+                                _description = _description = value;
                               },
                             ),
-                          ),
-                          const Divider(),
-                          _newMembers.value.isEmpty
-                              ? Container()
-                              : SizedBox(
-                                  width: 800,
-                                  height: 100,
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: _newMembers.value.length,
-                                    itemBuilder: (context, index) {
-                                      return SizedBox(
-                                        width: 100,
-                                        child: ListTile(
-                                            title:
-                                                Text(_newMembers.value[index])),
+                            hpaddingBoxL,
+                            Text("メンバー ${data.members.length}"),
+                            /* 現在のメンバー */
+                            SizedBox(
+                              width: 300,
+                              height: 100,
+                              child: ListView.builder(
+                                itemCount: _members.value.length,
+                                itemBuilder: (context, index) {
+                                  final userNames = ref.watch(
+                                      getAppUserByIdProvider(
+                                          _members.value[index]));
+                                  return userNames.when(
+                                    data: (AppUser? data) {
+                                      return ListTile(
+                                        title: Text(data?.userName ?? "ユーザー"),
+                                        /* メンバーから省く */
+                                        trailing: IconButton(
+                                          icon: const Icon(Icons.remove),
+                                          onPressed: () {
+                                            _removeMember(index, data!);
+                                          },
+                                        ),
                                       );
                                     },
-                                  ),
-                                ),
-                          const Text("メンバーを追加"),
-                          /* ユーザー検索 */
-                          TextFormField(
-                            controller: searchController,
-                            decoration: InputDecoration(
-                                suffixIcon: IconButton(
-                              icon: const Icon(Icons.search),
-                              onPressed: () {
-                                _searchUser(searchController.text);
-                              },
-                            )),
-                            onSaved: (value) {
-                              _userId = value;
-                            },
-                          ),
-                          hpaddingBox,
-                          /* 検索結果 */
-                          TextFormField(
-                            readOnly: true,
-                            controller: foundUserNameController,
-                          ),
-                          hpaddingBox,
-                          /* 追加ボタン*/
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: IconButton(
-                                onPressed: () {
-                                  if (foundUserNameController.text != "" &&
-                                      !_newMembers.value.contains(
-                                          foundUserNameController.text)) {
-                                    _newMembers.value = [
-                                      ..._newMembers.value,
-                                      foundUserNameController.text
-                                    ];
-                                    _members.value = [
-                                      ..._members.value,
-                                      searchController.text
-                                    ];
-                                    print(" the member is ${_members.value}");
-                                  }
-                                  foundUserNameController.clear();
+                                    error: (error, stackTrace) {
+                                      print(error);
+                                      return const EmptyContent();
+                                    },
+                                    loading: () => const Center(
+                                        child: CircularProgressIndicator()),
+                                  );
                                 },
-                                icon: const Icon(Icons.add)),
-                          ),
-                          /* 更新ボタン */
-                          hpaddingBoxL,
-                          SizedBox(
-                            width: 300,
-                            height: 50,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                print("original members ${data.members}");
-                                print(
-                                    "The members are ${_members.value} type is ${_members.value.runtimeType}");
-                                _submit(data);
-                              },
-                              child: const Text(
-                                '更新',
-                                style: TextStyle(
-                                    fontSize: 18, color: Colors.white),
                               ),
                             ),
-                          ),
-                        ],
+                            const Divider(),
+                            hpaddingBox,
+                            const Align(
+                                alignment: Alignment.topLeft,
+                                child: Text("メンバーを追加")),
+                            hpaddingBox,
+                            /* ユーザー検索 */
+                            Column(
+                              children: [
+                                TextFormField(
+                                  controller: searchController,
+                                  decoration: InputDecoration(
+                                      label: const Text("ユーザーIDで検索"),
+                                      suffixIcon: IconButton(
+                                        icon: const Icon(Icons.search),
+                                        onPressed: () {
+                                          _searchUser(searchController.text);
+                                        },
+                                      )),
+                                  onSaved: (value) {
+                                    _userId = value;
+                                  },
+                                ),
+                                hpaddingBox,
+                                /* 検索結果 */
+                                TextFormField(
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                  ),
+                                  readOnly: true,
+                                  controller: foundUserNameController,
+                                ),
+                                hpaddingBox,
+                                /* 追加ボタン*/
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: IconButton(
+                                      onPressed: () {
+                                        _addMember();
+                                      },
+                                      icon: const Icon(Icons.add)),
+                                ),
+                              ],
+                            ),
+                            /* 更新ボタン */
+                            hpaddingBoxL,
+                            SizedBox(
+                              width: 300,
+                              height: 50,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  print("original members ${data.members}");
+                                  print(
+                                      "The members are ${_members.value} type is ${_members.value.runtimeType}");
+                                  _submit(data);
+                                },
+                                child: const Text(
+                                  '更新',
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
