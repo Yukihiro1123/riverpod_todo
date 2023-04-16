@@ -18,6 +18,7 @@ class EditTaskScreenController extends _$EditTaskScreenController {
     required String title,
     required String description,
     required int status,
+    required List<String> members,
     required Task task,
   }) async {
     final currentUser = ref.read(authRepositoryProvider).currentUser;
@@ -31,6 +32,7 @@ class EditTaskScreenController extends _$EditTaskScreenController {
           task: task.copyWith(
             taskTitle: title,
             taskDescription: description,
+            members: members,
             status: status,
           ),
         ));
