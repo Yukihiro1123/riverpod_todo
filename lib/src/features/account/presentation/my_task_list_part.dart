@@ -24,7 +24,9 @@ class MyTaskListPart extends HookConsumerWidget {
           });
           final myTasksQuery = ref.watch(myTasksQueryProvider(status));
           return FirestoreListView<Task>(
-            query: myTasksQuery,
+            query: myTasksQuery
+                .where("userId", arrayContains: userId)
+                .where("status", isEqualTo: status),
             itemBuilder: (context, doc) {
               final task = doc.data();
               return Dismissible(

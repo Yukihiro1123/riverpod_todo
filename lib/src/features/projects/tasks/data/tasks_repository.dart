@@ -75,8 +75,8 @@ class TasksRepository {
   }) =>
       _firestore
           .collectionGroup("tasks")
-          .where("userId", arrayContains: uid)
-          .where("status", isEqualTo: status)
+          // .where("userId", arrayContains: uid)
+          // .where("status", isEqualTo: status)
           .withConverter(
             fromFirestore: (snapshot, _) => Task.fromJson(snapshot.data()!),
             toFirestore: (task, _) => task.toJson(),

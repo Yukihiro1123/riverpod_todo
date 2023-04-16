@@ -176,9 +176,8 @@ class EditProjectScreen extends HookConsumerWidget {
                                       return SizedBox(
                                         width: 100,
                                         child: ListTile(
-                                            title: Text(
-                                                _newMembers.value[index] ??
-                                                    "ユーザー")),
+                                            title:
+                                                Text(_newMembers.value[index])),
                                       );
                                     },
                                   ),

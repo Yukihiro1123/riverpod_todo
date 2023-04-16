@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_todo/src/common_widgets/avatar.dart';
 import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
-import 'package:riverpod_todo/src/features/account/presentation/edit_profile_screen.dart';
+import 'package:riverpod_todo/src/features/account/presentation/edit_profile/edit_profile_screen.dart';
 import 'package:riverpod_todo/src/features/account/presentation/my_task_list_part.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
 import 'package:riverpod_todo/src/features/projects/data/projects_repository.dart';
