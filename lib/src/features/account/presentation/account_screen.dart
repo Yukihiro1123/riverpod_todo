@@ -26,7 +26,7 @@ class AccountScreen extends HookConsumerWidget {
     final List<Widget> tabList = [
       const Tab(child: Text('未完了タスク')),
       const Tab(child: Text('完了済タスク')),
-      const Tab(child: Text('グループ')),
+      const Tab(child: Text('プロジェクト')),
     ];
     final _controller = useTabController(initialLength: tabList.length);
     final userId = ref.watch(authRepositoryProvider).currentUser!.uid;

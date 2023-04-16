@@ -1,4 +1,5 @@
 import 'dart:html';
+import 'dart:math';
 
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
@@ -80,31 +81,35 @@ class TasksScreen extends HookConsumerWidget {
                       children: [
                         Text('${data.members.length}人のメンバー'),
                         hpaddingBox,
-                        SizedBox(
-                          width: 60 * (data.members.length).toDouble(),
-                          height: 60,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: data.members.length,
-                            itemBuilder: (context, index) {
-                              final userNames = ref.watch(
-                                  getAppUserByIdProvider(data.members[index]));
-                              return userNames.when(
-                                data: (AppUser? data) {
-                                  return Tooltip(
-                                    message: data!.userName,
-                                    child: Avatar(
-                                        radius: 25, photoUrl: data.imageUrl),
-                                  );
-                                },
-                                error: (error, stackTrace) {
-                                  print(error);
-                                  return const EmptyContent();
-                                },
-                                loading: () => const Center(
-                                    child: CircularProgressIndicator()),
-                              );
-                            },
+                        SingleChildScrollView(
+                          child: SizedBox(
+                            width:
+                                min(60 * (data.members.length).toDouble(), 600),
+                            height: 60,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: data.members.length,
+                              itemBuilder: (context, index) {
+                                final userNames = ref.watch(
+                                    getAppUserByIdProvider(
+                                        data.members[index]));
+                                return userNames.when(
+                                  data: (AppUser? data) {
+                                    return Tooltip(
+                                      message: data!.userName,
+                                      child: Avatar(
+                                          radius: 25, photoUrl: data.imageUrl),
+                                    );
+                                  },
+                                  error: (error, stackTrace) {
+                                    print(error);
+                                    return const EmptyContent();
+                                  },
+                                  loading: () => const Center(
+                                      child: CircularProgressIndicator()),
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ],

@@ -58,6 +58,27 @@ class TasksRepository {
             toFirestore: (task, _) => task.toJson(),
           );
 
+  Query<Task> queryFeedTasks() => _firestore
+      .collectionGroup("tasks")
+      .where("status", isEqualTo: 2)
+      .withConverter(
+        fromFirestore: (snapshot, _) => Task.fromJson(snapshot.data()!),
+        toFirestore: (task, _) => task.toJson(),
+      );
+
+  Query<Task> queryMyTasks({
+    required String uid,
+    required int status,
+  }) =>
+      _firestore
+          .collectionGroup("tasks")
+          .where("userId", arrayContains: uid)
+          .where("status", isEqualTo: status)
+          .withConverter(
+            fromFirestore: (snapshot, _) => Task.fromJson(snapshot.data()!),
+            toFirestore: (task, _) => task.toJson(),
+          );
+
   // Future<List<Task>> fetchTasks({required String uid}) async {
   //   final query = await queryTasks(uid: uid).get();
   //   return query.docs.map((doc) => doc.data()).toList();
@@ -68,19 +89,6 @@ class TasksRepository {
     final Task task = Task.fromJson(query.docs[0].data());
     return task;
   }
-
-  Query<Task> queryMyTasks({
-    required String uid,
-    required int status,
-  }) =>
-      _firestore
-          .collectionGroup("tasks")
-          // .where("userId", arrayContains: uid)
-          // .where("status", isEqualTo: status)
-          .withConverter(
-            fromFirestore: (snapshot, _) => Task.fromJson(snapshot.data()!),
-            toFirestore: (task, _) => task.toJson(),
-          );
 }
 
 @Riverpod(keepAlive: true)
@@ -106,6 +114,16 @@ Query<Task> myTasksQuery(TasksQueryRef ref, int status) {
   }
   final repository = ref.watch(tasksRepositoryProvider);
   return repository.queryMyTasks(uid: user.uid, status: status);
+}
+
+@riverpod
+Query<Task> feedTasksQuery(TasksQueryRef ref) {
+  final user = ref.watch(firebaseAuthProvider).currentUser;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final repository = ref.watch(tasksRepositoryProvider);
+  return repository.queryFeedTasks();
 }
 
 @riverpod

@@ -207,6 +207,21 @@ class MyTasksQueryProvider extends AutoDisposeProvider<Query<Task>> {
   }
 }
 
+String _$feedTasksQueryHash() => r'942700588a77667fb45a429be0f17c680add0f6e';
+
+/// See also [feedTasksQuery].
+@ProviderFor(feedTasksQuery)
+final feedTasksQueryProvider = AutoDisposeProvider<Query<Task>>.internal(
+  feedTasksQuery,
+  name: r'feedTasksQueryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$feedTasksQueryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef FeedTasksQueryRef = AutoDisposeProviderRef<Query<Task>>;
 String _$taskStreamHash() => r'fe9f14670ff6a9495e5ebdfdc354392347c2c91e';
 typedef TaskStreamRef = AutoDisposeStreamProviderRef<Task>;
 
