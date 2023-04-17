@@ -18,6 +18,7 @@ class AddTaskScreenController extends _$AddTaskScreenController {
     required String projectId,
     required String title,
     required String description,
+    required List<String> members,
   }) async {
     final currentUser = ref.read(authRepositoryProvider).currentUser;
     if (currentUser == null) {
@@ -30,7 +31,7 @@ class AddTaskScreenController extends _$AddTaskScreenController {
           task: Task(
             projectId: projectId,
             taskId: const Uuid().v4(),
-            members: [currentUser.uid],
+            members: members,
             taskTitle: title,
             taskDescription: description,
             createdAt: DateTime.now(),

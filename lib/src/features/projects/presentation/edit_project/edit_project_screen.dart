@@ -120,8 +120,8 @@ class EditProjectScreen extends HookConsumerWidget {
                             hpaddingBoxL,
                             TextFormField(
                               maxLines: 10,
-                              decoration:
-                                  const InputDecoration(labelText: '概要'),
+                              decoration: const InputDecoration(
+                                  labelText: '概要', alignLabelWithHint: true),
                               keyboardAppearance: Brightness.light,
                               initialValue: _description,
                               validator: (value) {

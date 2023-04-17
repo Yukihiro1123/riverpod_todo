@@ -13,4 +13,5 @@ const editProfileDialogShape = RoundedRectangleBorder(
 
 const SizedBox vpaddingBox = SizedBox(width: 10);
 const SizedBox hpaddingBox = SizedBox(height: 10);
+const SizedBox hpaddingBoxM = SizedBox(height: 20);
 const SizedBox hpaddingBoxL = SizedBox(height: 30);

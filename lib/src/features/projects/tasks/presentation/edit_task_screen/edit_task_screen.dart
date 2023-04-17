@@ -121,7 +121,6 @@ class EditTaskScreen extends HookConsumerWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                          hpaddingBoxL,
                           Align(
                             alignment: Alignment.topRight,
                             child: Column(
@@ -138,7 +137,7 @@ class EditTaskScreen extends HookConsumerWidget {
                               ],
                             ),
                           ),
-                          hpaddingBoxL,
+                          hpaddingBox,
                           TextFormField(
                             decoration:
                                 const InputDecoration(labelText: 'タイトル'),
@@ -148,9 +147,11 @@ class EditTaskScreen extends HookConsumerWidget {
                                 (value ?? '').isNotEmpty ? null : '必須入力項目です',
                             onSaved: (value) => _title = value,
                           ),
-                          hpaddingBoxL,
+                          hpaddingBoxM,
                           TextFormField(
-                            decoration: const InputDecoration(labelText: '概要'),
+                            maxLines: 10,
+                            decoration: const InputDecoration(
+                                labelText: '概要', alignLabelWithHint: true),
                             keyboardAppearance: Brightness.light,
                             initialValue: _description,
                             validator: (value) {
@@ -166,7 +167,7 @@ class EditTaskScreen extends HookConsumerWidget {
                               _description = _description = value;
                             },
                           ),
-                          hpaddingBoxL,
+                          hpaddingBoxM,
                           Text("メンバー ${data.members.length}"),
                           /* 現在のメンバー */
                           SizedBox(
@@ -202,11 +203,10 @@ class EditTaskScreen extends HookConsumerWidget {
                             ),
                           ),
                           const Divider(),
-                          hpaddingBox,
                           const Align(
                               alignment: Alignment.topLeft,
                               child: Text("メンバーを追加")),
-                          hpaddingBox,
+
                           /* ユーザー検索 */
                           SearchUserPart(
                             searchController: searchController,
