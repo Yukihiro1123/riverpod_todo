@@ -21,7 +21,7 @@ final tasksRepositoryProvider = Provider<TasksRepository>.internal(
 );
 
 typedef TasksRepositoryRef = ProviderRef<TasksRepository>;
-String _$tasksQueryHash() => r'ffefcc0d1b86440bac22592328bdc2b3777e0392';
+String _$tasksStreamHash() => r'83cedb83768a048de75bedb3168210f3d13c4a62';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -44,29 +44,29 @@ class _SystemHash {
   }
 }
 
-typedef TasksQueryRef = AutoDisposeProviderRef<Query<Task>>;
+typedef TasksStreamRef = AutoDisposeStreamProviderRef<List<Task>>;
 
-/// See also [tasksQuery].
-@ProviderFor(tasksQuery)
-const tasksQueryProvider = TasksQueryFamily();
+/// See also [tasksStream].
+@ProviderFor(tasksStream)
+const tasksStreamProvider = TasksStreamFamily();
 
-/// See also [tasksQuery].
-class TasksQueryFamily extends Family<Query<Task>> {
-  /// See also [tasksQuery].
-  const TasksQueryFamily();
+/// See also [tasksStream].
+class TasksStreamFamily extends Family<AsyncValue<List<Task>>> {
+  /// See also [tasksStream].
+  const TasksStreamFamily();
 
-  /// See also [tasksQuery].
-  TasksQueryProvider call(
+  /// See also [tasksStream].
+  TasksStreamProvider call(
     String projectId,
   ) {
-    return TasksQueryProvider(
+    return TasksStreamProvider(
       projectId,
     );
   }
 
   @override
-  TasksQueryProvider getProviderOverride(
-    covariant TasksQueryProvider provider,
+  TasksStreamProvider getProviderOverride(
+    covariant TasksStreamProvider provider,
   ) {
     return call(
       provider.projectId,
@@ -85,35 +85,35 @@ class TasksQueryFamily extends Family<Query<Task>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'tasksQueryProvider';
+  String? get name => r'tasksStreamProvider';
 }
 
-/// See also [tasksQuery].
-class TasksQueryProvider extends AutoDisposeProvider<Query<Task>> {
-  /// See also [tasksQuery].
-  TasksQueryProvider(
+/// See also [tasksStream].
+class TasksStreamProvider extends AutoDisposeStreamProvider<List<Task>> {
+  /// See also [tasksStream].
+  TasksStreamProvider(
     this.projectId,
   ) : super.internal(
-          (ref) => tasksQuery(
+          (ref) => tasksStream(
             ref,
             projectId,
           ),
-          from: tasksQueryProvider,
-          name: r'tasksQueryProvider',
+          from: tasksStreamProvider,
+          name: r'tasksStreamProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$tasksQueryHash,
-          dependencies: TasksQueryFamily._dependencies,
+                  : _$tasksStreamHash,
+          dependencies: TasksStreamFamily._dependencies,
           allTransitiveDependencies:
-              TasksQueryFamily._allTransitiveDependencies,
+              TasksStreamFamily._allTransitiveDependencies,
         );
 
   final String projectId;
 
   @override
   bool operator ==(Object other) {
-    return other is TasksQueryProvider && other.projectId == projectId;
+    return other is TasksStreamProvider && other.projectId == projectId;
   }
 
   @override
@@ -125,30 +125,30 @@ class TasksQueryProvider extends AutoDisposeProvider<Query<Task>> {
   }
 }
 
-String _$myTasksQueryHash() => r'88d3ce1252525d804f0d451cb536b0d2df6c3d82';
-typedef MyTasksQueryRef = AutoDisposeProviderRef<Query<Task>>;
+String _$myTasksStreamHash() => r'24a32b5c925843008d4791c3f5c6c2b228275ace';
+typedef MyTasksStreamRef = AutoDisposeStreamProviderRef<List<Task>>;
 
-/// See also [myTasksQuery].
-@ProviderFor(myTasksQuery)
-const myTasksQueryProvider = MyTasksQueryFamily();
+/// See also [myTasksStream].
+@ProviderFor(myTasksStream)
+const myTasksStreamProvider = MyTasksStreamFamily();
 
-/// See also [myTasksQuery].
-class MyTasksQueryFamily extends Family<Query<Task>> {
-  /// See also [myTasksQuery].
-  const MyTasksQueryFamily();
+/// See also [myTasksStream].
+class MyTasksStreamFamily extends Family<AsyncValue<List<Task>>> {
+  /// See also [myTasksStream].
+  const MyTasksStreamFamily();
 
-  /// See also [myTasksQuery].
-  MyTasksQueryProvider call(
+  /// See also [myTasksStream].
+  MyTasksStreamProvider call(
     int status,
   ) {
-    return MyTasksQueryProvider(
+    return MyTasksStreamProvider(
       status,
     );
   }
 
   @override
-  MyTasksQueryProvider getProviderOverride(
-    covariant MyTasksQueryProvider provider,
+  MyTasksStreamProvider getProviderOverride(
+    covariant MyTasksStreamProvider provider,
   ) {
     return call(
       provider.status,
@@ -167,35 +167,35 @@ class MyTasksQueryFamily extends Family<Query<Task>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'myTasksQueryProvider';
+  String? get name => r'myTasksStreamProvider';
 }
 
-/// See also [myTasksQuery].
-class MyTasksQueryProvider extends AutoDisposeProvider<Query<Task>> {
-  /// See also [myTasksQuery].
-  MyTasksQueryProvider(
+/// See also [myTasksStream].
+class MyTasksStreamProvider extends AutoDisposeStreamProvider<List<Task>> {
+  /// See also [myTasksStream].
+  MyTasksStreamProvider(
     this.status,
   ) : super.internal(
-          (ref) => myTasksQuery(
+          (ref) => myTasksStream(
             ref,
             status,
           ),
-          from: myTasksQueryProvider,
-          name: r'myTasksQueryProvider',
+          from: myTasksStreamProvider,
+          name: r'myTasksStreamProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$myTasksQueryHash,
-          dependencies: MyTasksQueryFamily._dependencies,
+                  : _$myTasksStreamHash,
+          dependencies: MyTasksStreamFamily._dependencies,
           allTransitiveDependencies:
-              MyTasksQueryFamily._allTransitiveDependencies,
+              MyTasksStreamFamily._allTransitiveDependencies,
         );
 
   final int status;
 
   @override
   bool operator ==(Object other) {
-    return other is MyTasksQueryProvider && other.status == status;
+    return other is MyTasksStreamProvider && other.status == status;
   }
 
   @override
@@ -207,21 +207,21 @@ class MyTasksQueryProvider extends AutoDisposeProvider<Query<Task>> {
   }
 }
 
-String _$feedTasksQueryHash() => r'942700588a77667fb45a429be0f17c680add0f6e';
+String _$feedTasksStreamHash() => r'16ce61ccc8f5875d2d47beab915af8843a915be8';
 
-/// See also [feedTasksQuery].
-@ProviderFor(feedTasksQuery)
-final feedTasksQueryProvider = AutoDisposeProvider<Query<Task>>.internal(
-  feedTasksQuery,
-  name: r'feedTasksQueryProvider',
+/// See also [feedTasksStream].
+@ProviderFor(feedTasksStream)
+final feedTasksStreamProvider = AutoDisposeStreamProvider<List<Task>>.internal(
+  feedTasksStream,
+  name: r'feedTasksStreamProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$feedTasksQueryHash,
+      : _$feedTasksStreamHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef FeedTasksQueryRef = AutoDisposeProviderRef<Query<Task>>;
+typedef FeedTasksStreamRef = AutoDisposeStreamProviderRef<List<Task>>;
 String _$taskStreamHash() => r'fe9f14670ff6a9495e5ebdfdc354392347c2c91e';
 typedef TaskStreamRef = AutoDisposeStreamProviderRef<Task>;
 

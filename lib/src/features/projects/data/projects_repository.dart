@@ -38,38 +38,25 @@ class ProjectsRepository {
       {required String uid, required String projectId}) {
     return _firestore
         .doc(projectPath(projectId))
-        .withConverter<Project>(
-          fromFirestore: (snapshot, _) => Project.fromJson(snapshot.data()!),
-          toFirestore: (project, _) => project.toJson(),
-        )
         .snapshots()
-        .map((snapshot) => snapshot.data()!);
+        .map((snapshot) => Project.fromJson(snapshot.data()!));
   }
 
-  Stream<List<Project>> watchProjects({required String uid}) =>
-      queryprojects(uid: uid)
-          .snapshots()
-          .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
+  Stream<List<Project>> watchProjects() =>
+      _firestore.collection(projectsPath()).snapshots().map((snapshot) =>
+          snapshot.docs.map((doc) => Project.fromJson(doc.data())).toList());
 
-  Query<Project> queryprojects({required String uid}) => _firestore
+  Stream<List<Project>> watchMyProjects({required String userId}) => _firestore
       .collection(projectsPath())
-      .where("members", arrayContains: uid)
-      .withConverter(
-        fromFirestore: (snapshot, _) => Project.fromJson(snapshot.data()!),
-        toFirestore: (project, _) => project.toJson(),
-      );
+      .where("members", arrayContains: userId)
+      .snapshots()
+      .map((snapshot) =>
+          snapshot.docs.map((doc) => Project.fromJson(doc.data())).toList());
 
   // Future<List<project>> fetchprojects({required String uid}) async {
   //   final query = await queryprojects(uid: uid).get();
   //   return query.docs.map((doc) => doc.data()).toList();
   // }
-
-  Future<Project> fetchproject(
-      {required String uid, required String projectId}) async {
-    final query = await _firestore.collection(projectPath(projectId)).get();
-    final Project project = Project.fromJson(query.docs[0].data());
-    return project;
-  }
 }
 
 @Riverpod(keepAlive: true)
@@ -77,14 +64,24 @@ ProjectsRepository projectsRepository(ProjectsRepositoryRef ref) {
   return ProjectsRepository(FirebaseFirestore.instance);
 }
 
-@riverpod
-Query<Project> projectsQuery(ProjectsQueryRef ref) {
+@Riverpod(keepAlive: false)
+Stream<List<Project>> projectsStream(ProjectsStreamRef ref) {
   final user = ref.watch(firebaseAuthProvider).currentUser;
   if (user == null) {
     throw AssertionError('User can\'t be null');
   }
   final repository = ref.watch(projectsRepositoryProvider);
-  return repository.queryprojects(uid: user.uid);
+  return repository.watchProjects();
+}
+
+@Riverpod(keepAlive: false)
+Stream<List<Project>> myProjectsStream(MyProjectsStreamRef ref, String userId) {
+  final user = ref.watch(firebaseAuthProvider).currentUser;
+  if (user == null) {
+    throw AssertionError('User can\'t be null');
+  }
+  final repository = ref.watch(projectsRepositoryProvider);
+  return repository.watchMyProjects(userId: userId);
 }
 
 @riverpod

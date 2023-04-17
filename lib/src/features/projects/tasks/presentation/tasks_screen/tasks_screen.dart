@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:riverpod_todo/src/common_widgets/avatar.dart';
 import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
+import 'package:riverpod_todo/src/common_widgets/list_item_builder.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
 import 'package:riverpod_todo/src/features/projects/data/projects_repository.dart';
 import 'package:riverpod_todo/src/features/projects/tasks/data/tasks_repository.dart';
@@ -128,23 +129,20 @@ class TasksScreen extends HookConsumerWidget {
                             (_, state) {
                           return state.showAlertDialogOnError(context);
                         });
-                        final tasksQuery =
-                            ref.watch(tasksQueryProvider(projectId));
-                        return FirestoreListView<Task>(
-                          query: tasksQuery,
-                          itemBuilder: (context, doc) {
-                            final task = doc.data();
+                        return ListItemsBuilder<Task>(
+                          data: ref.watch(tasksStreamProvider(projectId)),
+                          itemBuilder: (context, model) {
                             return Dismissible(
-                              key: Key('task-${task.taskId}'),
+                              key: Key('task-${model.taskId}'),
                               child: ListTile(
-                                title: Text(task.taskTitle),
+                                title: Text(model.taskTitle),
                                 trailing: const Icon(Icons.chevron_right),
                                 onTap: () {
                                   context.goNamed(
                                     AppRoute.editTask.name,
                                     params: {
                                       'projectId': projectId,
-                                      'taskId': task.taskId
+                                      'taskId': model.taskId
                                     },
                                   );
                                 },

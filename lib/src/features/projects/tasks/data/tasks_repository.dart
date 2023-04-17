@@ -39,50 +39,36 @@ class TasksRepository {
   Stream<Task> watchTask({required String projectId, required String taskId}) {
     return _firestore
         .doc(taskPath(projectId, taskId))
-        .withConverter<Task>(
-          fromFirestore: (snapshot, _) => Task.fromJson(snapshot.data()!),
-          toFirestore: (task, _) => task.toJson(),
-        )
         .snapshots()
-        .map((snapshot) => snapshot.data()!);
+        .map((snapshot) => Task.fromJson(snapshot.data()!));
   }
 
-  Stream<List<Task>> watchTasks({required String projectId}) =>
-      queryTasks(projectId: projectId)
-          .snapshots()
-          .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
+  Stream<List<Task>> watchMyTasks({required String projectId}) =>
+      _firestore.collection(tasksPath(projectId)).snapshots().map((snapshot) =>
+          snapshot.docs.map((doc) => Task.fromJson(doc.data())).toList());
 
-  Query<Task> queryTasks({required String projectId}) =>
-      _firestore.collection(tasksPath(projectId)).withConverter(
-            fromFirestore: (snapshot, _) => Task.fromJson(snapshot.data()!),
-            toFirestore: (task, _) => task.toJson(),
-          );
+  Stream<List<Task>> tasksStream({required String projectId}) =>
+      _firestore.collection(tasksPath(projectId)).snapshots().map((snapshot) =>
+          snapshot.docs.map((doc) => Task.fromJson(doc.data())).toList());
 
-  Query<Task> queryFeedTasks() => _firestore
+  Stream<List<Task>> feedTasksStream() => _firestore
       .collectionGroup("tasks")
       .where("status", isEqualTo: 2)
-      .withConverter(
-        fromFirestore: (snapshot, _) => Task.fromJson(snapshot.data()!),
-        toFirestore: (task, _) => task.toJson(),
-      );
+      .snapshots()
+      .map((snapshot) =>
+          snapshot.docs.map((doc) => Task.fromJson(doc.data())).toList());
 
-  Query<Task> queryMyTasks({
+  Stream<List<Task>> myTasksStream({
     required String uid,
     required int status,
   }) =>
       _firestore
           .collectionGroup("tasks")
-          .where("userId", arrayContains: uid)
+          .where("members", arrayContains: uid)
           .where("status", isEqualTo: status)
-          .withConverter(
-            fromFirestore: (snapshot, _) => Task.fromJson(snapshot.data()!),
-            toFirestore: (task, _) => task.toJson(),
-          );
-
-  // Future<List<Task>> fetchTasks({required String uid}) async {
-  //   final query = await queryTasks(uid: uid).get();
-  //   return query.docs.map((doc) => doc.data()).toList();
-  // }
+          .snapshots()
+          .map((snapshot) =>
+              snapshot.docs.map((doc) => Task.fromJson(doc.data())).toList());
 
   Future<Task> fetchTask({required String uid, required String taskId}) async {
     final query = await _firestore.collection(taskPath(uid, taskId)).get();
@@ -96,34 +82,34 @@ TasksRepository tasksRepository(TasksRepositoryRef ref) {
   return TasksRepository(FirebaseFirestore.instance);
 }
 
-@riverpod
-Query<Task> tasksQuery(TasksQueryRef ref, String projectId) {
+@Riverpod(keepAlive: false)
+Stream<List<Task>> tasksStream(TasksStreamRef ref, String projectId) {
   final user = ref.watch(firebaseAuthProvider).currentUser;
   if (user == null) {
     throw AssertionError('User can\'t be null');
   }
   final repository = ref.watch(tasksRepositoryProvider);
-  return repository.queryTasks(projectId: projectId);
+  return repository.tasksStream(projectId: projectId);
 }
 
 @riverpod
-Query<Task> myTasksQuery(TasksQueryRef ref, int status) {
+Stream<List<Task>> myTasksStream(MyTasksStreamRef ref, int status) {
   final user = ref.watch(firebaseAuthProvider).currentUser;
   if (user == null) {
     throw AssertionError('User can\'t be null');
   }
   final repository = ref.watch(tasksRepositoryProvider);
-  return repository.queryMyTasks(uid: user.uid, status: status);
+  return repository.myTasksStream(uid: user.uid, status: status);
 }
 
-@riverpod
-Query<Task> feedTasksQuery(TasksQueryRef ref) {
+@Riverpod(keepAlive: false)
+Stream<List<Task>> feedTasksStream(FeedTasksStreamRef ref) {
   final user = ref.watch(firebaseAuthProvider).currentUser;
   if (user == null) {
     throw AssertionError('User can\'t be null');
   }
   final repository = ref.watch(tasksRepositoryProvider);
-  return repository.queryFeedTasks();
+  return repository.feedTasksStream();
 }
 
 @riverpod

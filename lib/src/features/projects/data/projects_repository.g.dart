@@ -22,22 +22,23 @@ final projectsRepositoryProvider = Provider<ProjectsRepository>.internal(
 );
 
 typedef ProjectsRepositoryRef = ProviderRef<ProjectsRepository>;
-String _$projectsQueryHash() => r'd6980277bf9bfa2f51418d25b14c42d4255a29d3';
+String _$projectsStreamHash() => r'754e333ddad691831fc5c04e71ecd18497e8a4f5';
 
-/// See also [projectsQuery].
-@ProviderFor(projectsQuery)
-final projectsQueryProvider = AutoDisposeProvider<Query<Project>>.internal(
-  projectsQuery,
-  name: r'projectsQueryProvider',
+/// See also [projectsStream].
+@ProviderFor(projectsStream)
+final projectsStreamProvider =
+    AutoDisposeStreamProvider<List<Project>>.internal(
+  projectsStream,
+  name: r'projectsStreamProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$projectsQueryHash,
+      : _$projectsStreamHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef ProjectsQueryRef = AutoDisposeProviderRef<Query<Project>>;
-String _$projectStreamHash() => r'e448c363f09477fbe11f51987859c4489d4c06f7';
+typedef ProjectsStreamRef = AutoDisposeStreamProviderRef<List<Project>>;
+String _$myProjectsStreamHash() => r'0e0f9666cc2c1101c39cb25f680a0e9e637d8a60';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -60,6 +61,89 @@ class _SystemHash {
   }
 }
 
+typedef MyProjectsStreamRef = AutoDisposeStreamProviderRef<List<Project>>;
+
+/// See also [myProjectsStream].
+@ProviderFor(myProjectsStream)
+const myProjectsStreamProvider = MyProjectsStreamFamily();
+
+/// See also [myProjectsStream].
+class MyProjectsStreamFamily extends Family<AsyncValue<List<Project>>> {
+  /// See also [myProjectsStream].
+  const MyProjectsStreamFamily();
+
+  /// See also [myProjectsStream].
+  MyProjectsStreamProvider call(
+    String userId,
+  ) {
+    return MyProjectsStreamProvider(
+      userId,
+    );
+  }
+
+  @override
+  MyProjectsStreamProvider getProviderOverride(
+    covariant MyProjectsStreamProvider provider,
+  ) {
+    return call(
+      provider.userId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'myProjectsStreamProvider';
+}
+
+/// See also [myProjectsStream].
+class MyProjectsStreamProvider
+    extends AutoDisposeStreamProvider<List<Project>> {
+  /// See also [myProjectsStream].
+  MyProjectsStreamProvider(
+    this.userId,
+  ) : super.internal(
+          (ref) => myProjectsStream(
+            ref,
+            userId,
+          ),
+          from: myProjectsStreamProvider,
+          name: r'myProjectsStreamProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$myProjectsStreamHash,
+          dependencies: MyProjectsStreamFamily._dependencies,
+          allTransitiveDependencies:
+              MyProjectsStreamFamily._allTransitiveDependencies,
+        );
+
+  final String userId;
+
+  @override
+  bool operator ==(Object other) {
+    return other is MyProjectsStreamProvider && other.userId == userId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, userId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+String _$projectStreamHash() => r'e448c363f09477fbe11f51987859c4489d4c06f7';
 typedef ProjectStreamRef = AutoDisposeStreamProviderRef<Project>;
 
 /// See also [projectStream].
