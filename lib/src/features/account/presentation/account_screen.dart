@@ -99,9 +99,9 @@ class AccountScreen extends HookConsumerWidget {
                       controller: _controller,
                       physics:
                           kIsWeb ? const NeverScrollableScrollPhysics() : null,
-
-                      /// タブに表示したいWidgetをchildrenに記載する
                       children: [
+                        MyTaskListPart(userId: userId, status: 1),
+                        MyTaskListPart(userId: userId, status: 2),
                         Consumer(
                           builder: (context, ref, child) {
                             ref.listen<AsyncValue>(
@@ -118,39 +118,34 @@ class AccountScreen extends HookConsumerWidget {
                                       params: {'projectId': model.projectId},
                                     );
                                   },
-                                  child: SizedBox(
-                                    width: 100,
-                                    height: 100,
-                                    child: Card(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          ListTile(
-                                            leading: const Icon(Icons.album),
-                                            title: Text(model.projectTitle),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: <Widget>[
-                                              IconButton(
-                                                icon: const Icon(
-                                                    Icons.arrow_forward),
-                                                onPressed: () {
-                                                  context.goNamed(
-                                                    AppRoute.project.name,
-                                                    params: {
-                                                      'projectId':
-                                                          model.projectId
-                                                    },
-                                                  );
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                  child: Card(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        ListTile(
+                                          leading: const Icon(Icons.album),
+                                          title: Text(model.projectTitle),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: <Widget>[
+                                            IconButton(
+                                              icon: const Icon(
+                                                  Icons.arrow_forward),
+                                              onPressed: () {
+                                                context.goNamed(
+                                                  AppRoute.project.name,
+                                                  params: {
+                                                    'projectId': model.projectId
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 );
@@ -158,8 +153,6 @@ class AccountScreen extends HookConsumerWidget {
                             );
                           },
                         ),
-                        MyTaskListPart(userId: userId, status: 1),
-                        MyTaskListPart(userId: userId, status: 2),
                       ],
                     ),
                   ),
