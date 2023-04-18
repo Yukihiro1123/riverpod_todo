@@ -1,33 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
 
 typedef ItemWidgetBuilder<T> = Widget Function(BuildContext context, T item);
 
-class ListItemsBuilder<T> extends StatelessWidget {
-  const ListItemsBuilder({
+class GridItemsBuilder<T> extends StatelessWidget {
+  const GridItemsBuilder({
     Key? key,
     required this.data,
     required this.itemBuilder,
-    this.height,
   }) : super(key: key);
   final AsyncValue<List<T>> data;
   final ItemWidgetBuilder<T> itemBuilder;
-  final double? height;
 
   @override
   Widget build(BuildContext context) {
     return data.when(
       data: (items) => items.isNotEmpty
-          ? ListView.builder(
+          ? GridView.builder(
               padding: const EdgeInsets.all(10.0),
-              itemCount: items.length + 2,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisSpacing: 10, //ボックス左右間のスペース
+                crossAxisCount: 4, //ボックスを横に並べる数
+              ),
+              itemCount: items.length,
               itemBuilder: (context, index) {
-                if (index == 0 || index == items.length + 1) {
-                  return const SizedBox.shrink();
-                }
-                return itemBuilder(context, items[index - 1]);
+                return itemBuilder(context, items[index]);
               },
             )
           : const EmptyContent(),

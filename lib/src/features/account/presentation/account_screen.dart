@@ -7,6 +7,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_todo/src/common_widgets/avatar.dart';
 import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
+import 'package:riverpod_todo/src/common_widgets/grid_item_builder.dart';
+
 import 'package:riverpod_todo/src/common_widgets/list_item_builder.dart';
 import 'package:riverpod_todo/src/features/account/presentation/edit_profile/edit_profile_screen.dart';
 import 'package:riverpod_todo/src/features/account/presentation/my_task_list_part.dart';
@@ -106,18 +108,51 @@ class AccountScreen extends HookConsumerWidget {
                                 projectsScreenControllerProvider, (_, state) {
                               return state.showAlertDialogOnError(context);
                             });
-                            return ListItemsBuilder<Project>(
+                            return GridItemsBuilder<Project>(
                               data: ref.watch(myProjectsStreamProvider(userId)),
                               itemBuilder: (context, model) {
-                                return ListTile(
-                                  title: Text(model.projectTitle),
-                                  trailing: const Icon(Icons.chevron_right),
+                                return InkWell(
                                   onTap: () {
                                     context.goNamed(
                                       AppRoute.project.name,
                                       params: {'projectId': model.projectId},
                                     );
                                   },
+                                  child: SizedBox(
+                                    width: 100,
+                                    height: 100,
+                                    child: Card(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          ListTile(
+                                            leading: const Icon(Icons.album),
+                                            title: Text(model.projectTitle),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: <Widget>[
+                                              IconButton(
+                                                icon: const Icon(
+                                                    Icons.arrow_forward),
+                                                onPressed: () {
+                                                  context.goNamed(
+                                                    AppRoute.project.name,
+                                                    params: {
+                                                      'projectId':
+                                                          model.projectId
+                                                    },
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 );
                               },
                             );
