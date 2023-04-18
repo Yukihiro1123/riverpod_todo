@@ -51,8 +51,7 @@ class GridItemsBuilder<T> extends StatelessWidget {
               return const Card(child: ShimmerImage(height: 10));
             });
       },
-      error: (error, error2) {
-        print("$error $error2");
+      error: (_, error) {
         return const EmptyContent(
           title: 'Something went wrong',
           message: 'Can\'t load items right now',

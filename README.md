@@ -1,12 +1,8 @@
 # riverpod_todo
 
-Flutter ライブラリ
-
-flutter pub add freezed_annotation json_annotation hooks_riverpod flutter_hooks cached_network_image go_router
-
-flutter pub add firebase_auth firebase_core cloud_firestore firebase_storage firebase_analytics
-
-flutter pub add --dev build_runner freezed json_serializable
+- プロジェクト概要をダイアログにする
+- プロジェクト、タスクの削除&その後のブラウザバック禁止
+- プロジェクト編集、削除、タスク追加、編集、削除はメンバーしかできないようにする
 
 ## デプロイ
 

@@ -106,6 +106,7 @@ class EditTaskScreen extends HookConsumerWidget {
       ),
       body: ref.watch(taskStreamProvider(projectId, taskId)).when(
             data: (data) {
+              //フォームの初期値
               _title = data.taskTitle;
               _description = data.taskDescription;
               _status = useState(data.status == 1 ? false : true);

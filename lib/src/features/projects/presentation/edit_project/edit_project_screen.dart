@@ -13,6 +13,7 @@ import 'package:riverpod_todo/src/features/projects/common_widgets/search_user_p
 import 'package:riverpod_todo/src/features/projects/data/projects_repository.dart';
 import 'package:riverpod_todo/src/features/projects/domain/project.dart';
 import 'package:riverpod_todo/src/features/projects/presentation/edit_project/edit_project_screen_controller.dart';
+import 'package:riverpod_todo/src/utils/check_user_authority.dart';
 
 import 'package:riverpod_todo/src/utils/style.dart';
 
@@ -96,11 +97,15 @@ class EditProjectScreen extends HookConsumerWidget {
       ),
       body: ref.watch(projectStreamProvider(projectId)).when(
             data: (data) {
+              final bool isReadOnly = isProjectFormReadOnly(ref, data);
+              print("readonly: $isReadOnly");
+              //フォームの初期値
               _title = data.projectTitle;
               _description = data.projectDescription;
               if (_members.value.isEmpty) {
                 _members.value = data.members;
               }
+
               return Center(
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.9,
@@ -114,6 +119,7 @@ class EditProjectScreen extends HookConsumerWidget {
                             const Text('プロジェクトを編集'),
                             hpaddingBoxL,
                             TextFormField(
+                              readOnly: isReadOnly,
                               decoration:
                                   const InputDecoration(labelText: 'タイトル'),
                               keyboardAppearance: Brightness.light,
@@ -124,6 +130,7 @@ class EditProjectScreen extends HookConsumerWidget {
                             ),
                             hpaddingBoxL,
                             TextFormField(
+                              readOnly: isReadOnly,
                               maxLines: 10,
                               decoration: const InputDecoration(
                                   labelText: '概要', alignLabelWithHint: true),
@@ -159,7 +166,9 @@ class EditProjectScreen extends HookConsumerWidget {
                                         trailing: IconButton(
                                           icon: const Icon(Icons.remove),
                                           onPressed: () {
-                                            _removeMember(index, data!);
+                                            if (!isReadOnly) {
+                                              _removeMember(index, data!);
+                                            }
                                           },
                                         ),
                                       );
@@ -168,64 +177,79 @@ class EditProjectScreen extends HookConsumerWidget {
                                       print(error);
                                       return const EmptyContent();
                                     },
-                                    loading: () => ListView.separated(
-                                        separatorBuilder: (context, index) =>
-                                            const SizedBox(height: 10),
-                                        itemCount: 2,
-                                        itemBuilder: (context, index) {
-                                          return const ShimmerImage(width: 300);
-                                        }),
+                                    loading: () => SizedBox(
+                                      width: 300,
+                                      height: 100,
+                                      child: ListView.separated(
+                                          separatorBuilder: (context, index) =>
+                                              const SizedBox(height: 10),
+                                          itemCount: 2,
+                                          itemBuilder: (context, index) {
+                                            return const ShimmerImage(
+                                                width: 300);
+                                          }),
+                                    ),
                                   );
                                 },
                               ),
                             ),
                             const Divider(),
                             hpaddingBox,
-                            const Align(
-                                alignment: Alignment.topLeft,
-                                child: Text("メンバーを追加")),
+                            isReadOnly
+                                ? const SizedBox.shrink()
+                                : const Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text("メンバーを追加")),
                             hpaddingBox,
                             /* ユーザー検索 */
-                            SearchUserPart(
-                              searchController: searchController,
-                              foundUserIdController: foundUserIdController,
-                              foundUserNameController: foundUserNameController,
-                            ),
+                            isReadOnly
+                                ? const SizedBox.shrink()
+                                : SearchUserPart(
+                                    searchController: searchController,
+                                    foundUserIdController:
+                                        foundUserIdController,
+                                    foundUserNameController:
+                                        foundUserNameController,
+                                  ),
                             /* ユーザー追加 */
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: IconButton(
-                                  onPressed: () {
-                                    _addMember();
-                                  },
-                                  icon: const Icon(Icons.add)),
-                            ),
+                            isReadOnly
+                                ? const SizedBox.shrink()
+                                : Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: IconButton(
+                                        onPressed: () {
+                                          _addMember();
+                                        },
+                                        icon: const Icon(Icons.add)),
+                                  ),
                             /* 更新ボタン */
                             hpaddingBoxL,
-                            SizedBox(
-                              width: 300,
-                              height: 50,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (_validateAndSaveForm()) {
-                                    showConfirmDialog(
-                                        context: context,
-                                        title: "プロジェクト情報の更新",
-                                        content: "プロジェクト情報を更新してもよろしいですか",
-                                        onConfirmed: (isConfirmed) {
-                                          if (isConfirmed) {
-                                            _submit(data);
-                                          }
-                                        });
-                                  }
-                                },
-                                child: const Text(
-                                  '更新',
-                                  style: TextStyle(
-                                      fontSize: 18, color: Colors.white),
-                                ),
-                              ),
-                            ),
+                            isReadOnly
+                                ? const SizedBox.shrink()
+                                : SizedBox(
+                                    width: 300,
+                                    height: 50,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        if (_validateAndSaveForm()) {
+                                          showConfirmDialog(
+                                              context: context,
+                                              title: "プロジェクト情報の更新",
+                                              content: "プロジェクト情報を更新してもよろしいですか",
+                                              onConfirmed: (isConfirmed) {
+                                                if (isConfirmed) {
+                                                  _submit(data);
+                                                }
+                                              });
+                                        }
+                                      },
+                                      child: const Text(
+                                        '更新',
+                                        style: TextStyle(
+                                            fontSize: 18, color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
                           ],
                         ),
                       ),

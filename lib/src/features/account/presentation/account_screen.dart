@@ -1,5 +1,3 @@
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +9,6 @@ import 'package:riverpod_todo/src/common_widgets/confirm_dialog.dart';
 import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
 import 'package:riverpod_todo/src/common_widgets/grid_item_builder.dart';
 
-import 'package:riverpod_todo/src/common_widgets/list_item_builder.dart';
-import 'package:riverpod_todo/src/common_widgets/shimmer_effect.dart';
 import 'package:riverpod_todo/src/features/account/presentation/edit_profile/edit_profile_screen.dart';
 import 'package:riverpod_todo/src/features/account/presentation/my_task_list_part.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
