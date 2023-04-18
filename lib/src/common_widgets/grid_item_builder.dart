@@ -48,7 +48,7 @@ class GridItemsBuilder<T> extends StatelessWidget {
             ),
             itemCount: 10,
             itemBuilder: (context, index) {
-              return const ShimmerImage(height: 10);
+              return const Card(child: ShimmerImage(height: 10));
             });
       },
       error: (error, error2) {
