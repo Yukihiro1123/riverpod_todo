@@ -49,6 +49,26 @@ class ProjectsRepository {
     });
   }
 
+  Future<bool> checkIfProjectExists(String projectId) async {
+    final query = await _firestore
+        .collection("projects")
+        .where("projectId", isEqualTo: projectId)
+        .limit(1)
+        .get();
+    return query.docs.isNotEmpty;
+  }
+
+  Future<bool> checkIfTaskExists(String projectId, String taskId) async {
+    final query = await _firestore
+        .collection("projects")
+        .doc(projectId)
+        .collection("tasks")
+        .where("taskId", isEqualTo: taskId)
+        .limit(1)
+        .get();
+    return query.docs.isNotEmpty;
+  }
+
   // read
   Stream<Project> watchProject({
     required String uid,

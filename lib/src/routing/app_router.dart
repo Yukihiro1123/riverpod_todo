@@ -6,6 +6,7 @@ import 'package:riverpod_todo/src/features/account/presentation/account_screen.d
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
 import 'package:riverpod_todo/src/features/auth/presentation/auth_screen.dart';
 import 'package:riverpod_todo/src/features/feed/presentation/feed_screen.dart';
+import 'package:riverpod_todo/src/features/projects/data/projects_repository.dart';
 
 import 'package:riverpod_todo/src/features/projects/presentation/add_project/add_project_screen.dart';
 import 'package:riverpod_todo/src/features/projects/presentation/edit_project/edit_project_screen.dart';
@@ -105,6 +106,16 @@ GoRouter goRouter(GoRouterRef ref) {
                     child: TasksScreen(projectId: projectId!),
                   );
                 },
+                redirect: ((context, state) async {
+                  final projectId = state.params['projectId'];
+                  final bool isProjectExists = await ref
+                      .read(projectsRepositoryProvider)
+                      .checkIfProjectExists(projectId!);
+                  if (!isProjectExists) {
+                    return "/projects";
+                  }
+                  return null;
+                }),
                 routes: [
                   GoRoute(
                     path: 'edit_project',
@@ -144,6 +155,17 @@ GoRouter goRouter(GoRouterRef ref) {
                             projectId: projectId!, taskId: taskId!),
                       );
                     },
+                    redirect: ((context, state) async {
+                      final projectId = state.params['projectId'];
+                      final taskId = state.params['taskId'];
+                      final bool isTaskExists = await ref
+                          .read(projectsRepositoryProvider)
+                          .checkIfTaskExists(projectId!, taskId!);
+                      if (!isTaskExists) {
+                        return "/projects";
+                      }
+                      return null;
+                    }),
                   ),
                 ],
               ),

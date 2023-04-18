@@ -104,7 +104,7 @@ class EditProjectScreen extends HookConsumerWidget {
           .read(editProjectScreenControllerProvider.notifier)
           .delete(projectId: projectId);
       if (success) {
-        context.pop();
+        context.goNamed("projects");
       }
     }
 
