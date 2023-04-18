@@ -1,13 +1,12 @@
 // private navigators
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+
 import 'package:riverpod_todo/src/features/account/presentation/account_screen.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
 import 'package:riverpod_todo/src/features/auth/presentation/auth_screen.dart';
 import 'package:riverpod_todo/src/features/feed/presentation/feed_screen.dart';
-import 'package:riverpod_todo/src/features/projects/data/projects_repository.dart';
-import 'package:riverpod_todo/src/features/projects/domain/project.dart';
+
 import 'package:riverpod_todo/src/features/projects/presentation/add_project/add_project_screen.dart';
 import 'package:riverpod_todo/src/features/projects/presentation/edit_project/edit_project_screen.dart';
 import 'package:riverpod_todo/src/features/projects/presentation/projects/projects_screen.dart';

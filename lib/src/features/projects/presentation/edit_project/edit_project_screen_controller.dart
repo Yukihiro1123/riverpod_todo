@@ -1,6 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
-import 'package:riverpod_todo/src/features/auth/domain/app_user.dart';
 import 'package:riverpod_todo/src/features/projects/data/projects_repository.dart';
 import 'package:riverpod_todo/src/features/projects/domain/project.dart';
 
@@ -31,5 +30,13 @@ class EditProjectScreenController extends _$EditProjectScreenController {
           ),
         ));
     return state.hasError == false;
+  }
+
+  bool isProjectFormReadOnly(Project project) {
+    final currentUser = ref.read(authRepositoryProvider).currentUser;
+    if (project.members.contains(currentUser!.uid)) {
+      return false;
+    }
+    return true;
   }
 }

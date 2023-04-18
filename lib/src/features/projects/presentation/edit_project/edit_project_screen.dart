@@ -13,7 +13,6 @@ import 'package:riverpod_todo/src/features/projects/common_widgets/search_user_p
 import 'package:riverpod_todo/src/features/projects/data/projects_repository.dart';
 import 'package:riverpod_todo/src/features/projects/domain/project.dart';
 import 'package:riverpod_todo/src/features/projects/presentation/edit_project/edit_project_screen_controller.dart';
-import 'package:riverpod_todo/src/utils/check_user_authority.dart';
 
 import 'package:riverpod_todo/src/utils/style.dart';
 
@@ -97,7 +96,9 @@ class EditProjectScreen extends HookConsumerWidget {
       ),
       body: ref.watch(projectStreamProvider(projectId)).when(
             data: (data) {
-              final bool isReadOnly = isProjectFormReadOnly(ref, data);
+              final bool isReadOnly = ref
+                  .read(editProjectScreenControllerProvider.notifier)
+                  .isProjectFormReadOnly(data);
               print("readonly: $isReadOnly");
               //フォームの初期値
               _title = data.projectTitle;
