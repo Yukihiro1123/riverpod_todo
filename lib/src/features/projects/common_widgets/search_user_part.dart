@@ -12,12 +12,14 @@ class SearchUserPart extends HookConsumerWidget {
   final TextEditingController searchController;
   final TextEditingController foundUserNameController;
   final TextEditingController foundUserIdController;
+  final VoidCallback? addMember;
 
   const SearchUserPart({
     super.key,
     required this.searchController,
     required this.foundUserIdController,
     required this.foundUserNameController,
+    required this.addMember,
   });
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -54,9 +56,12 @@ class SearchUserPart extends HookConsumerWidget {
         hpaddingBox,
         /* 検索結果 */
         TextFormField(
-          decoration: const InputDecoration(
-            border: InputBorder.none,
-          ),
+          decoration: InputDecoration(
+              border: InputBorder.none,
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: addMember,
+              )),
           readOnly: true,
           controller: foundUserNameController,
         ),

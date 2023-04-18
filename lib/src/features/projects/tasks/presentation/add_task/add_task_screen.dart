@@ -204,15 +204,9 @@ class AddTaskScreen extends HookConsumerWidget {
                 searchController: searchController,
                 foundUserIdController: foundUserIdController,
                 foundUserNameController: foundUserNameController,
-              ),
-              /* ユーザー追加 */
-              Align(
-                alignment: Alignment.bottomRight,
-                child: IconButton(
-                    onPressed: () {
-                      _addMember();
-                    },
-                    icon: const Icon(Icons.add)),
+                addMember: () {
+                  _addMember();
+                },
               ),
             ],
           ),

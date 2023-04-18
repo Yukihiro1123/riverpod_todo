@@ -136,21 +136,18 @@ class TasksScreen extends HookConsumerWidget {
                     return ListItemsBuilder<Task>(
                       data: ref.watch(tasksStreamProvider(projectId)),
                       itemBuilder: (context, model) {
-                        return Dismissible(
-                          key: Key('task-${model.taskId}'),
-                          child: ListTile(
-                            title: Text(model.taskTitle),
-                            trailing: const Icon(Icons.chevron_right),
-                            onTap: () {
-                              context.goNamed(
-                                AppRoute.editTask.name,
-                                params: {
-                                  'projectId': projectId,
-                                  'taskId': model.taskId
-                                },
-                              );
-                            },
-                          ),
+                        return ListTile(
+                          title: Text(model.taskTitle),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: () {
+                            context.goNamed(
+                              AppRoute.editTask.name,
+                              params: {
+                                'projectId': projectId,
+                                'taskId': model.taskId
+                              },
+                            );
+                          },
                         );
                       },
                     );

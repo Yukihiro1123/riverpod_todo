@@ -68,7 +68,7 @@ class EditTaskScreen extends HookConsumerWidget {
 
     void _removeMember(int index, AppUser data) {
       if (_members.value.length == 1) {
-        Fluttertoast.showToast(msg: "やめろ");
+        Fluttertoast.showToast(msg: "メンバーは最低一人以上必要です");
         return;
       }
       List<String> updatedList = List.from(_members.value);
@@ -233,15 +233,9 @@ class EditTaskScreen extends HookConsumerWidget {
                             searchController: searchController,
                             foundUserIdController: foundUserIdController,
                             foundUserNameController: foundUserNameController,
-                          ),
-                          /* ユーザー追加 */
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: IconButton(
-                                onPressed: () {
-                                  _addMember();
-                                },
-                                icon: const Icon(Icons.add)),
+                            addMember: () {
+                              _addMember();
+                            },
                           ),
                           /* 更新ボタン */
                           hpaddingBoxL,

@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_todo/src/common_widgets/avatar.dart';
@@ -37,6 +39,15 @@ class AccountScreen extends HookConsumerWidget {
       ref.read(authRepositoryProvider).signOut();
     }
 
+    void _copyToClipBoard(String userId) {
+      Clipboard.setData(
+        ClipboardData(
+          text: userId,
+        ),
+      );
+      Fluttertoast.showToast(msg: "クリップボードにコピーしました");
+    }
+
     return ref.watch(getAppUserByIdProvider(userId)).when(
           data: (user) {
             return Scaffold(
@@ -67,8 +78,26 @@ class AccountScreen extends HookConsumerWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(user.userName ?? "アカウント"),
+                          Text(user.userName ?? "名無し"),
+                          hpaddingBox,
                           Text(user.email),
+                          hpaddingBox,
+                          Row(
+                            children: [
+                              const Text("ユーザーID:"),
+                              vpaddingBox,
+                              Row(
+                                children: [
+                                  Text("${user.userId.substring(0, 16)}..."),
+                                  IconButton(
+                                      onPressed: () {
+                                        _copyToClipBoard(user.userId);
+                                      },
+                                      icon: const Icon(Icons.copy))
+                                ],
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                       vpaddingBox,
