@@ -32,6 +32,7 @@ class GridItemsBuilder<T> extends StatelessWidget {
           : const EmptyContent(),
       loading: () {
         return GridView.builder(
+            padding: const EdgeInsets.all(10.0),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisSpacing: 10, //ボックス左右間のスペース
               crossAxisCount: 6, //ボックスを横に並べる数
