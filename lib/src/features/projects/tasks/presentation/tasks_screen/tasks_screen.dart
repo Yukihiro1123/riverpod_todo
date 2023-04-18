@@ -164,8 +164,10 @@ class TasksScreen extends HookConsumerWidget {
                 Icons.add,
               ),
               onPressed: () {
-                context.goNamed(AppRoute.addTask.name,
-                    params: {"projectId": projectId});
+                context.goNamed(
+                  AppRoute.addTask.name,
+                  params: {"projectId": projectId},
+                );
               }),
         );
       },

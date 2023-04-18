@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
 import 'package:riverpod_todo/src/features/projects/data/projects_repository.dart';
@@ -9,6 +10,9 @@ part 'edit_project_screen_controller.g.dart';
 class EditProjectScreenController extends _$EditProjectScreenController {
   @override
   FutureOr<void> build() {}
+
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
 
   Future<bool> submit({
     required String title,

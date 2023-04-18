@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
 import 'package:riverpod_todo/src/features/projects/data/projects_repository.dart';
@@ -14,6 +15,9 @@ class EditTaskScreenController extends _$EditTaskScreenController {
   FutureOr<void> build() {
     //
   }
+
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
 
   Future<bool> isTaskFormReadOnly(Task data) async {
     final currentUser = ref.read(authRepositoryProvider).currentUser;

@@ -13,6 +13,7 @@ import 'package:riverpod_todo/src/features/projects/common_widgets/search_user_p
 import 'package:riverpod_todo/src/features/projects/data/projects_repository.dart';
 import 'package:riverpod_todo/src/features/projects/domain/project.dart';
 import 'package:riverpod_todo/src/features/projects/presentation/edit_project/edit_project_screen_controller.dart';
+import 'package:riverpod_todo/src/utils/async_value_ui.dart';
 
 import 'package:riverpod_todo/src/utils/style.dart';
 
@@ -22,9 +23,15 @@ class EditProjectScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen<AsyncValue>(
+      editProjectScreenControllerProvider,
+      (_, state) => state.showAlertDialogOnError(context),
+    );
+    final state = ref.watch(editProjectScreenControllerProvider);
+    final editProjectScreenControllerProviderRef =
+        ref.watch(editProjectScreenControllerProvider.notifier);
     final _formKey = GlobalKey<FormState>();
-    String? _title;
-    String? _description;
+
     var _members = useState<List<String>>([]);
     var _newMembers = useState<List<String>>([]);
 
@@ -78,13 +85,15 @@ class EditProjectScreen extends HookConsumerWidget {
     }
 
     Future<void> _submit(Project project) async {
-      final success =
-          await ref.read(editProjectScreenControllerProvider.notifier).submit(
-                title: _title!,
-                description: _description!,
-                project: project,
-                members: _members.value,
-              );
+      final success = await ref
+          .read(editProjectScreenControllerProvider.notifier)
+          .submit(
+            title: editProjectScreenControllerProviderRef.titleController.text,
+            description: editProjectScreenControllerProviderRef
+                .descriptionController.text,
+            project: project,
+            members: _members.value,
+          );
       if (success) {
         context.pop();
       }
@@ -101,8 +110,19 @@ class EditProjectScreen extends HookConsumerWidget {
                   .isProjectFormReadOnly(data);
               print("readonly: $isReadOnly");
               //フォームの初期値
-              _title = data.projectTitle;
-              _description = data.projectDescription;
+              if (editProjectScreenControllerProviderRef.titleController.text ==
+                  "") {
+                editProjectScreenControllerProviderRef.titleController.text =
+                    data.projectTitle;
+              }
+
+              if (editProjectScreenControllerProviderRef
+                      .descriptionController.text ==
+                  "") {
+                editProjectScreenControllerProviderRef
+                    .descriptionController.text = data.projectTitle;
+              }
+
               if (_members.value.isEmpty) {
                 _members.value = data.members;
               }
@@ -124,10 +144,10 @@ class EditProjectScreen extends HookConsumerWidget {
                               decoration:
                                   const InputDecoration(labelText: 'タイトル'),
                               keyboardAppearance: Brightness.light,
-                              initialValue: _title,
+                              controller: editProjectScreenControllerProviderRef
+                                  .titleController,
                               validator: (value) =>
                                   (value ?? '').isNotEmpty ? null : '必須入力項目です',
-                              onSaved: (value) => _title = value,
                             ),
                             hpaddingBoxL,
                             TextFormField(
@@ -136,16 +156,14 @@ class EditProjectScreen extends HookConsumerWidget {
                               decoration: const InputDecoration(
                                   labelText: '概要', alignLabelWithHint: true),
                               keyboardAppearance: Brightness.light,
-                              initialValue: _description,
+                              controller: editProjectScreenControllerProviderRef
+                                  .descriptionController,
                               validator: (value) {
                                 return (value ?? '').isNotEmpty
                                     ? null
                                     : '必須入力項目です';
                               },
                               keyboardType: TextInputType.multiline,
-                              onSaved: (value) {
-                                _description = _description = value;
-                              },
                             ),
                             hpaddingBoxL,
                             Text("メンバー ${data.members.length}"),

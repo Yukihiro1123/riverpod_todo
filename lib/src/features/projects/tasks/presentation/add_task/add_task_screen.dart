@@ -10,6 +10,8 @@ import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
 import 'package:riverpod_todo/src/features/auth/domain/app_user.dart';
 import 'package:riverpod_todo/src/features/projects/common_widgets/search_user_part.dart';
+import 'package:riverpod_todo/src/features/projects/data/projects_repository.dart';
+import 'package:riverpod_todo/src/features/projects/domain/project.dart';
 import 'package:riverpod_todo/src/features/projects/tasks/presentation/add_task/add_task_screen_controller.dart';
 
 import 'package:riverpod_todo/src/utils/async_value_ui.dart';
@@ -25,11 +27,11 @@ class AddTaskScreen extends HookConsumerWidget {
       (_, state) => state.showAlertDialogOnError(context),
     );
     final state = ref.watch(addTaskScreenControllerProvider);
+    final addTaskScreenControllerProviderRef =
+        ref.watch(addTaskScreenControllerProvider.notifier);
 
     final _formKey = GlobalKey<FormState>();
 
-    String? _title;
-    String? _description;
     var _members = useState<List<String>>([]);
     var _newMembers = useState<List<String>>([]);
     final TextEditingController searchController = TextEditingController();
@@ -78,11 +80,23 @@ class AddTaskScreen extends HookConsumerWidget {
     }
 
     Future<void> _submit() async {
-      print("projectID: $projectId");
+      //プロジェクトを取得
+      final Project project = await ref
+          .read(projectsRepositoryProvider)
+          .fetchProject(projectId: projectId);
+      //ユーザーがプロジェクトのメンバーかどうか
+      final bool isCurrentUserMember = ref
+          .read(addTaskScreenControllerProvider.notifier)
+          .checkMemberBelongToProject(project);
+      if (!isCurrentUserMember) {
+        Fluttertoast.showToast(msg: "メンバーではないためタスクの追加はできません");
+        return;
+      }
       final success =
           await ref.read(addTaskScreenControllerProvider.notifier).submit(
-                title: _title!,
-                description: _description!,
+                title: addTaskScreenControllerProviderRef.titleController.text,
+                description: addTaskScreenControllerProviderRef
+                    .descriptionController.text,
                 projectId: projectId,
                 members: _members.value,
               );
@@ -126,10 +140,9 @@ class AddTaskScreen extends HookConsumerWidget {
               TextFormField(
                 decoration: const InputDecoration(labelText: 'タイトル'),
                 keyboardAppearance: Brightness.light,
-                initialValue: _title,
+                controller: addTaskScreenControllerProviderRef.titleController,
                 validator: (value) =>
                     (value ?? '').isNotEmpty ? null : '必須入力項目です',
-                onSaved: (value) => _title = value,
               ),
               hpaddingBoxM,
               TextFormField(
@@ -137,14 +150,14 @@ class AddTaskScreen extends HookConsumerWidget {
                 decoration: const InputDecoration(
                     labelText: '概要', alignLabelWithHint: true),
                 keyboardAppearance: Brightness.light,
-                initialValue: _description,
+                controller:
+                    addTaskScreenControllerProviderRef.descriptionController,
                 validator: (value) =>
                     (value ?? '').isNotEmpty ? null : '必須入力項目です',
                 keyboardType: const TextInputType.numberWithOptions(
                   signed: false,
                   decimal: false,
                 ),
-                onSaved: (value) => _description = _description = value,
               ),
               hpaddingBoxM,
               /* 現在のメンバー */

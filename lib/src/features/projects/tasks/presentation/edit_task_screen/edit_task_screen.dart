@@ -34,11 +34,11 @@ class EditTaskScreen extends HookConsumerWidget {
       (_, state) => state.showAlertDialogOnError(context),
     );
     final state = ref.watch(editTaskScreenControllerProvider);
+    final editTaskScreenControllerProviderRef =
+        ref.watch(editTaskScreenControllerProvider.notifier);
 
     final _formKey = GlobalKey<FormState>();
 
-    String? _title;
-    String? _description;
     var _status;
 
     var _members = useState<List<String>>([]);
@@ -98,12 +98,12 @@ class EditTaskScreen extends HookConsumerWidget {
         Fluttertoast.showToast(msg: "プロジェクトのメンバーではないため編集できません");
         return;
       }
-      print(isReadOnly);
       final success =
           await ref.read(editTaskScreenControllerProvider.notifier).submit(
                 projectId: projectId,
-                title: _title!,
-                description: _description!,
+                title: editTaskScreenControllerProviderRef.titleController.text,
+                description: editTaskScreenControllerProviderRef
+                    .descriptionController.text,
                 status: _status.value == false ? 1 : 2,
                 members: _members.value,
                 task: task,
@@ -120,8 +120,17 @@ class EditTaskScreen extends HookConsumerWidget {
       body: ref.watch(taskStreamProvider(projectId, taskId)).when(
             data: (data) {
               //フォームの初期値
-              _title = data.taskTitle;
-              _description = data.taskDescription;
+              if (editTaskScreenControllerProviderRef.titleController.text ==
+                  "") {
+                editTaskScreenControllerProviderRef.titleController.text =
+                    data.taskTitle;
+              }
+              if (editTaskScreenControllerProviderRef
+                      .descriptionController.text ==
+                  "") {
+                editTaskScreenControllerProviderRef.descriptionController.text =
+                    data.taskDescription;
+              }
               _status = useState(data.status == 1 ? false : true);
               if (_members.value.isEmpty) {
                 _members.value = data.members;
@@ -156,18 +165,19 @@ class EditTaskScreen extends HookConsumerWidget {
                             decoration:
                                 const InputDecoration(labelText: 'タイトル'),
                             keyboardAppearance: Brightness.light,
-                            initialValue: _title,
+                            controller: editTaskScreenControllerProviderRef
+                                .titleController,
                             validator: (value) =>
                                 (value ?? '').isNotEmpty ? null : '必須入力項目です',
-                            onSaved: (value) => _title = value,
                           ),
                           hpaddingBoxM,
                           TextFormField(
                             maxLines: 10,
                             decoration: const InputDecoration(
                                 labelText: '概要', alignLabelWithHint: true),
+                            controller: editTaskScreenControllerProviderRef
+                                .descriptionController,
                             keyboardAppearance: Brightness.light,
-                            initialValue: _description,
                             validator: (value) {
                               return (value ?? '').isNotEmpty
                                   ? null
@@ -177,9 +187,6 @@ class EditTaskScreen extends HookConsumerWidget {
                               signed: false,
                               decimal: false,
                             ),
-                            onSaved: (value) {
-                              _description = _description = value;
-                            },
                           ),
                           hpaddingBoxM,
                           Text("メンバー ${data.members.length}"),
