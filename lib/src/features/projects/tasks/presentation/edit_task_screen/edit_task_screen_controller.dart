@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
+import 'package:riverpod_todo/src/features/projects/data/projects_repository.dart';
+import 'package:riverpod_todo/src/features/projects/domain/project.dart';
 import 'package:riverpod_todo/src/features/projects/tasks/data/tasks_repository.dart';
 import 'package:riverpod_todo/src/features/projects/tasks/domain/task/task.dart';
 
@@ -11,6 +13,17 @@ class EditTaskScreenController extends _$EditTaskScreenController {
   @override
   FutureOr<void> build() {
     //
+  }
+
+  Future<bool> isTaskFormReadOnly(Task data) async {
+    final currentUser = ref.read(authRepositoryProvider).currentUser;
+    final Project project = await ref
+        .read(projectsRepositoryProvider)
+        .fetchProject(projectId: data.projectId);
+    if (project.members.contains(currentUser!.uid)) {
+      return false;
+    }
+    return true;
   }
 
   Future<bool> submit({

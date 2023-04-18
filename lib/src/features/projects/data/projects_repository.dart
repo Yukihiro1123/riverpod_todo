@@ -48,8 +48,8 @@ class ProjectsRepository {
   Future<Project> fetchProject({
     required String projectId,
   }) async {
-    final query = await _firestore.collection(projectPath(projectId)).get();
-    final Project project = Project.fromJson(query.docs[0].data());
+    final query = await _firestore.doc(projectPath(projectId)).get();
+    final Project project = Project.fromJson(query.data()!);
     return project;
   }
 

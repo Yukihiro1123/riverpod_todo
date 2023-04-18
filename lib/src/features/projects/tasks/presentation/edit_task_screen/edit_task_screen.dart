@@ -10,19 +10,25 @@ import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
 import 'package:riverpod_todo/src/features/auth/domain/app_user.dart';
 import 'package:riverpod_todo/src/features/projects/common_widgets/search_user_part.dart';
+import 'package:riverpod_todo/src/features/projects/data/projects_repository.dart';
+import 'package:riverpod_todo/src/features/projects/domain/project.dart';
 import 'package:riverpod_todo/src/features/projects/tasks/data/tasks_repository.dart';
 import 'package:riverpod_todo/src/features/projects/tasks/domain/task/task.dart';
 import 'package:riverpod_todo/src/features/projects/tasks/presentation/edit_task_screen/edit_task_screen_controller.dart';
 
 import 'package:riverpod_todo/src/utils/async_value_ui.dart';
+import 'package:riverpod_todo/src/utils/check_user_authority.dart';
 import 'package:riverpod_todo/src/utils/style.dart';
 
 class EditTaskScreen extends HookConsumerWidget {
   final String projectId;
   final String taskId;
 
-  const EditTaskScreen(
-      {super.key, required this.projectId, required this.taskId});
+  const EditTaskScreen({
+    super.key,
+    required this.projectId,
+    required this.taskId,
+  });
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen<AsyncValue>(
@@ -86,6 +92,15 @@ class EditTaskScreen extends HookConsumerWidget {
     }
 
     Future<void> _submit(Task task) async {
+      //ユーザーの権限
+      final isReadOnly = await ref
+          .read(editTaskScreenControllerProvider.notifier)
+          .isTaskFormReadOnly(task);
+      if (isReadOnly) {
+        Fluttertoast.showToast(msg: "プロジェクトのメンバーではないため編集できません");
+        return;
+      }
+      print(isReadOnly);
       final success =
           await ref.read(editTaskScreenControllerProvider.notifier).submit(
                 projectId: projectId,

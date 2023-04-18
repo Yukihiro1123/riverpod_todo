@@ -93,7 +93,7 @@ class EditProjectScreen extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("タスクを編集"),
+        title: const Text("プロジェクトを編集"),
       ),
       body: ref.watch(projectStreamProvider(projectId)).when(
             data: (data) {
