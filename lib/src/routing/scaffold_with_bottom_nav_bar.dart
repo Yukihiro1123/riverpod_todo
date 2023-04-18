@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class ScaffoldWithBottomNavBar extends HookWidget {
+class ScaffoldWithBottomNavBar extends HookConsumerWidget {
   final Widget child;
   const ScaffoldWithBottomNavBar({super.key, required this.child});
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     const routes = {0: "projects", 1: "feed", 2: "account"};
     int calculateSelectedIndex(BuildContext context) {
       final String location = GoRouterState.of(context).location;
+      print(location);
       if (location.startsWith("/projects")) {
         return 0;
       }
@@ -23,13 +25,20 @@ class ScaffoldWithBottomNavBar extends HookWidget {
     }
 
     final selectedIndex = useState(calculateSelectedIndex(context));
+
+    useEffect(() {
+      Future.microtask(
+          () => selectedIndex.value = calculateSelectedIndex(context));
+
+      return () {};
+    }, [GoRouterState.of(context).location]);
+
     return Scaffold(
       body: child,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: selectedIndex.value,
         items: const [
-          // products
           BottomNavigationBarItem(
             icon: Icon(Icons.work),
             label: 'Projects',
