@@ -18,7 +18,7 @@ class ShimmerImage extends StatelessWidget {
           width: width ?? 50,
           child: Shimmer.fromColors(
             baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[100]!,
+            highlightColor: Colors.white,
             child: Container(
               decoration: BoxDecoration(
                 shape: isCircle != null ? BoxShape.circle : BoxShape.rectangle,
