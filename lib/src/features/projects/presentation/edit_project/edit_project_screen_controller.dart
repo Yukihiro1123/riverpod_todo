@@ -36,6 +36,18 @@ class EditProjectScreenController extends _$EditProjectScreenController {
     return state.hasError == false;
   }
 
+  Future<bool> delete({required String projectId}) async {
+    final currentUser = ref.read(authRepositoryProvider).currentUser;
+    if (currentUser == null) {
+      throw AssertionError('User can\'t be null');
+    }
+    state = const AsyncLoading().copyWithPrevious(state);
+    final repository = ref.read(projectsRepositoryProvider);
+    state = await AsyncValue.guard(
+        () => repository.deleteProject(projectId: projectId));
+    return state.hasError == false;
+  }
+
   bool isProjectFormReadOnly(Project project) {
     final currentUser = ref.read(authRepositoryProvider).currentUser;
     if (project.members.contains(currentUser!.uid)) {

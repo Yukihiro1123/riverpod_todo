@@ -55,4 +55,18 @@ class EditTaskScreenController extends _$EditTaskScreenController {
         ));
     return state.hasError == false;
   }
+
+  Future<bool> delete({required String projectId, required Task task}) async {
+    final currentUser = ref.read(authRepositoryProvider).currentUser;
+    if (currentUser == null) {
+      throw AssertionError('User can\'t be null');
+    }
+    state = const AsyncLoading().copyWithPrevious(state);
+    final repository = ref.read(tasksRepositoryProvider);
+    state = await AsyncValue.guard(() => repository.deleteTask(
+          projectId: projectId,
+          taskId: task.taskId,
+        ));
+    return state.hasError == false;
+  }
 }

@@ -99,6 +99,15 @@ class EditProjectScreen extends HookConsumerWidget {
       }
     }
 
+    Future<void> _delete(String projectId) async {
+      final success = await ref
+          .read(editProjectScreenControllerProvider.notifier)
+          .delete(projectId: projectId);
+      if (success) {
+        context.pop();
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("プロジェクトを編集"),
@@ -127,145 +136,181 @@ class EditProjectScreen extends HookConsumerWidget {
                 _members.value = data.members;
               }
 
-              return Center(
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: SingleChildScrollView(
-                    child: Form(
-                      key: _formKey,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            const Text('プロジェクトを編集'),
-                            hpaddingBoxL,
-                            TextFormField(
-                              readOnly: isReadOnly,
-                              decoration:
-                                  const InputDecoration(labelText: 'タイトル'),
-                              keyboardAppearance: Brightness.light,
-                              controller: editProjectScreenControllerProviderRef
-                                  .titleController,
-                              validator: (value) =>
-                                  (value ?? '').isNotEmpty ? null : '必須入力項目です',
-                            ),
-                            hpaddingBoxL,
-                            TextFormField(
-                              readOnly: isReadOnly,
-                              maxLines: 10,
-                              decoration: const InputDecoration(
-                                  labelText: '概要', alignLabelWithHint: true),
-                              keyboardAppearance: Brightness.light,
-                              controller: editProjectScreenControllerProviderRef
-                                  .descriptionController,
-                              validator: (value) {
-                                return (value ?? '').isNotEmpty
-                                    ? null
-                                    : '必須入力項目です';
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    isReadOnly
+                        ? const SizedBox.shrink()
+                        : Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(
+                              tooltip: "プロジェクトを削除",
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                showConfirmDialog(
+                                    context: context,
+                                    title: "プロジェクトの削除",
+                                    content: "プロジェクトを削除してもよろしいですか",
+                                    onConfirmed: (isConfirmed) {
+                                      if (isConfirmed) {
+                                        _delete(data.projectId);
+                                      }
+                                    });
                               },
-                              keyboardType: TextInputType.multiline,
                             ),
-                            hpaddingBoxL,
-                            Text("メンバー ${data.members.length}"),
-                            /* 現在のメンバー */
-                            SizedBox(
-                              width: 300,
-                              height: 100,
-                              child: ListView.builder(
-                                itemCount: _members.value.length,
-                                itemBuilder: (context, index) {
-                                  final userNames = ref.watch(
-                                      getAppUserByIdProvider(
-                                          _members.value[index]));
-                                  return userNames.when(
-                                    data: (AppUser? data) {
-                                      return ListTile(
-                                        title: Text(data?.userName ?? "ユーザー"),
-                                        /* メンバーから省く */
-                                        trailing: IconButton(
-                                          icon: const Icon(Icons.remove),
-                                          onPressed: () {
-                                            if (!isReadOnly) {
-                                              _removeMember(index, data!);
-                                            }
+                          ),
+                    Center(
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        child: SingleChildScrollView(
+                          child: Form(
+                            key: _formKey,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                children: [
+                                  const Text('プロジェクトを編集'),
+                                  hpaddingBoxL,
+                                  TextFormField(
+                                    readOnly: isReadOnly,
+                                    decoration: const InputDecoration(
+                                        labelText: 'タイトル'),
+                                    keyboardAppearance: Brightness.light,
+                                    controller:
+                                        editProjectScreenControllerProviderRef
+                                            .titleController,
+                                    validator: (value) =>
+                                        (value ?? '').isNotEmpty
+                                            ? null
+                                            : '必須入力項目です',
+                                  ),
+                                  hpaddingBoxL,
+                                  TextFormField(
+                                    readOnly: isReadOnly,
+                                    maxLines: 10,
+                                    decoration: const InputDecoration(
+                                        labelText: '概要',
+                                        alignLabelWithHint: true),
+                                    keyboardAppearance: Brightness.light,
+                                    controller:
+                                        editProjectScreenControllerProviderRef
+                                            .descriptionController,
+                                    validator: (value) {
+                                      return (value ?? '').isNotEmpty
+                                          ? null
+                                          : '必須入力項目です';
+                                    },
+                                    keyboardType: TextInputType.multiline,
+                                  ),
+                                  hpaddingBoxL,
+                                  Text("メンバー ${data.members.length}"),
+                                  /* 現在のメンバー */
+                                  SizedBox(
+                                    width: 300,
+                                    height: 100,
+                                    child: ListView.builder(
+                                      itemCount: _members.value.length,
+                                      itemBuilder: (context, index) {
+                                        final userNames = ref.watch(
+                                            getAppUserByIdProvider(
+                                                _members.value[index]));
+                                        return userNames.when(
+                                          data: (AppUser? data) {
+                                            return ListTile(
+                                              title: Text(
+                                                  data?.userName ?? "ユーザー"),
+                                              /* メンバーから省く */
+                                              trailing: IconButton(
+                                                icon: const Icon(Icons.remove),
+                                                onPressed: () {
+                                                  if (!isReadOnly) {
+                                                    _removeMember(index, data!);
+                                                  }
+                                                },
+                                              ),
+                                            );
+                                          },
+                                          error: (error, stackTrace) {
+                                            print(error);
+                                            return const EmptyContent();
+                                          },
+                                          loading: () => SizedBox(
+                                            width: 300,
+                                            height: 100,
+                                            child: ListView.separated(
+                                                separatorBuilder: (context,
+                                                        index) =>
+                                                    const SizedBox(height: 10),
+                                                itemCount: 2,
+                                                itemBuilder: (context, index) {
+                                                  return const ShimmerImage(
+                                                      width: 300);
+                                                }),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  const Divider(),
+                                  hpaddingBox,
+                                  isReadOnly
+                                      ? const SizedBox.shrink()
+                                      : const Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Text("メンバーを追加")),
+                                  hpaddingBox,
+                                  /* ユーザー検索 */
+                                  isReadOnly
+                                      ? const SizedBox.shrink()
+                                      : SearchUserPart(
+                                          searchController: searchController,
+                                          foundUserIdController:
+                                              foundUserIdController,
+                                          foundUserNameController:
+                                              foundUserNameController,
+                                          addMember: () {
+                                            _addMember();
                                           },
                                         ),
-                                      );
-                                    },
-                                    error: (error, stackTrace) {
-                                      print(error);
-                                      return const EmptyContent();
-                                    },
-                                    loading: () => SizedBox(
-                                      width: 300,
-                                      height: 100,
-                                      child: ListView.separated(
-                                          separatorBuilder: (context, index) =>
-                                              const SizedBox(height: 10),
-                                          itemCount: 2,
-                                          itemBuilder: (context, index) {
-                                            return const ShimmerImage(
-                                                width: 300);
-                                          }),
-                                    ),
-                                  );
-                                },
+                                  /* 更新ボタン */
+                                  hpaddingBoxL,
+                                  isReadOnly
+                                      ? const SizedBox.shrink()
+                                      : SizedBox(
+                                          width: 300,
+                                          height: 50,
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              if (_validateAndSaveForm()) {
+                                                showConfirmDialog(
+                                                    context: context,
+                                                    title: "プロジェクト情報の更新",
+                                                    content:
+                                                        "プロジェクト情報を更新してもよろしいですか",
+                                                    onConfirmed: (isConfirmed) {
+                                                      if (isConfirmed) {
+                                                        _submit(data);
+                                                      }
+                                                    });
+                                              }
+                                            },
+                                            child: const Text(
+                                              '更新',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ),
+                                ],
                               ),
                             ),
-                            const Divider(),
-                            hpaddingBox,
-                            isReadOnly
-                                ? const SizedBox.shrink()
-                                : const Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Text("メンバーを追加")),
-                            hpaddingBox,
-                            /* ユーザー検索 */
-                            isReadOnly
-                                ? const SizedBox.shrink()
-                                : SearchUserPart(
-                                    searchController: searchController,
-                                    foundUserIdController:
-                                        foundUserIdController,
-                                    foundUserNameController:
-                                        foundUserNameController,
-                                    addMember: () {
-                                      _addMember();
-                                    },
-                                  ),
-                            /* 更新ボタン */
-                            hpaddingBoxL,
-                            isReadOnly
-                                ? const SizedBox.shrink()
-                                : SizedBox(
-                                    width: 300,
-                                    height: 50,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        if (_validateAndSaveForm()) {
-                                          showConfirmDialog(
-                                              context: context,
-                                              title: "プロジェクト情報の更新",
-                                              content: "プロジェクト情報を更新してもよろしいですか",
-                                              onConfirmed: (isConfirmed) {
-                                                if (isConfirmed) {
-                                                  _submit(data);
-                                                }
-                                              });
-                                        }
-                                      },
-                                      child: const Text(
-                                        '更新',
-                                        style: TextStyle(
-                                            fontSize: 18, color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
               );
             },

@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:riverpod_todo/src/common_widgets/avatar.dart';
+import 'package:riverpod_todo/src/common_widgets/confirm_dialog.dart';
 import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
 import 'package:riverpod_todo/src/common_widgets/list_item_builder.dart';
 import 'package:riverpod_todo/src/common_widgets/shimmer_effect.dart';
@@ -157,6 +158,7 @@ class TasksScreen extends HookConsumerWidget {
             ],
           ),
           floatingActionButton: FloatingActionButton(
+              tooltip: "新規タスクを追加",
               child: const Icon(
                 Icons.add,
               ),

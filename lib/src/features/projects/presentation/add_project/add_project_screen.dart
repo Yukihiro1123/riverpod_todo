@@ -55,7 +55,7 @@ class AddProjectScreen extends HookConsumerWidget {
                     content: "プロジェクトを作成しても良いですか",
                     onConfirmed: (isConfirmed) {
                       if (isConfirmed) {
-                        _submit;
+                        _submit();
                       }
                     });
               }

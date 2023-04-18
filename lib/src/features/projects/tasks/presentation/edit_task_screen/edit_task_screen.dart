@@ -113,6 +113,25 @@ class EditTaskScreen extends HookConsumerWidget {
       }
     }
 
+    Future<void> _delete(Task task) async {
+      //ユーザーの権限
+      final isReadOnly = await ref
+          .read(editTaskScreenControllerProvider.notifier)
+          .isTaskFormReadOnly(task);
+      if (isReadOnly) {
+        Fluttertoast.showToast(msg: "プロジェクトのメンバーではないため削除できません");
+        return;
+      }
+      final success =
+          await ref.read(editTaskScreenControllerProvider.notifier).delete(
+                projectId: projectId,
+                task: task,
+              );
+      if (success) {
+        context.pop();
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("タスクを編集"),
@@ -261,6 +280,25 @@ class EditTaskScreen extends HookConsumerWidget {
                                 style: TextStyle(
                                     fontSize: 18, color: Colors.white),
                               ),
+                            ),
+                          ),
+                          /* 削除ボタン */
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: IconButton(
+                              tooltip: "タスクの削除",
+                              onPressed: () {
+                                showConfirmDialog(
+                                    context: context,
+                                    title: "タスクの削除",
+                                    content: "タスクを削除してもよろしいですか",
+                                    onConfirmed: (isConfirmed) {
+                                      if (isConfirmed) {
+                                        _delete(data);
+                                      }
+                                    });
+                              },
+                              icon: const Icon(Icons.delete),
                             ),
                           ),
                         ],

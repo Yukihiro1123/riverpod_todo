@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
 import 'package:riverpod_todo/src/features/projects/domain/project.dart';
+import 'package:riverpod_todo/src/features/projects/tasks/domain/task/task.dart';
 part 'projects_repository.g.dart';
 
 class ProjectsRepository {
@@ -12,7 +14,9 @@ class ProjectsRepository {
 
   static String projectPath(String projectId) => 'projects/$projectId';
   static String projectsPath() => 'projects/';
-
+  static String tasksPath(String projectId) => 'projects/$projectId/tasks/';
+  static String taskPath(String projectId, String taskId) =>
+      'projects/$projectId/tasks/$taskId';
   // create
   Future<void> addProject({required String uid, required Project project}) {
     return _firestore.doc(projectPath(project.projectId)).set(project.toJson());
@@ -26,11 +30,23 @@ class ProjectsRepository {
   }
 
   // delete
-  Future<void> deleteProject(
-      {required String uid, required String projectId}) async {
+  Future<void> deleteProject({required String projectId}) async {
+    final batch = _firestore.batch();
     // delete project
-    final projectRef = _firestore.doc(projectPath(projectId));
-    await projectRef.delete();
+    final projectToDelete = _firestore.doc(projectPath(projectId));
+    // delete task(s)
+    final tasksToDelete =
+        await _firestore.collection(tasksPath(projectId)).get();
+    if (tasksToDelete.docs.isNotEmpty) {
+      for (final taskDoc in tasksToDelete.docs) {
+        final taskToDelete = _firestore.doc(taskPath(projectId, taskDoc.id));
+        batch.delete(taskToDelete);
+      }
+    }
+    batch.delete(projectToDelete);
+    await batch.commit().then((doc) {
+      print("project & task(s) successfully deleted");
+    });
   }
 
   // read

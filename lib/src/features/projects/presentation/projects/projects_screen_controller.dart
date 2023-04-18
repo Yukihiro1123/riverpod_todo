@@ -26,18 +26,4 @@ class ProjectsScreenController extends _$ProjectsScreenController {
       () => database.updateProject(project: project),
     );
   }
-
-  Future<void> deleteproject(Project project) async {
-    final currentUser = ref.read(authRepositoryProvider).currentUser;
-    if (currentUser == null) {
-      throw AssertionError('User can\'t be null');
-    }
-    //firestore repository呼び出し
-    final database = ref.read(projectsRepositoryProvider);
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(
-      () => database.deleteProject(
-          uid: currentUser.uid, projectId: project.projectId),
-    );
-  }
 }
