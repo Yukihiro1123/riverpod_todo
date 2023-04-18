@@ -1,5 +1,6 @@
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -10,6 +11,7 @@ import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
 import 'package:riverpod_todo/src/common_widgets/grid_item_builder.dart';
 
 import 'package:riverpod_todo/src/common_widgets/list_item_builder.dart';
+import 'package:riverpod_todo/src/common_widgets/shimmer_effect.dart';
 import 'package:riverpod_todo/src/features/account/presentation/edit_profile/edit_profile_screen.dart';
 import 'package:riverpod_todo/src/features/account/presentation/my_task_list_part.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
@@ -41,7 +43,7 @@ class AccountScreen extends HookConsumerWidget {
                   onPressed: () {
                     ref.read(authRepositoryProvider).signOut();
                   },
-                  icon: const Icon(Icons.settings),
+                  icon: const Icon(Icons.logout),
                 )
               ]),
               body: Column(
@@ -100,8 +102,6 @@ class AccountScreen extends HookConsumerWidget {
 
                       /// タブに表示したいWidgetをchildrenに記載する
                       children: [
-                        MyTaskListPart(userId: userId, status: 1),
-                        MyTaskListPart(userId: userId, status: 2),
                         Consumer(
                           builder: (context, ref, child) {
                             ref.listen<AsyncValue>(
@@ -158,6 +158,8 @@ class AccountScreen extends HookConsumerWidget {
                             );
                           },
                         ),
+                        MyTaskListPart(userId: userId, status: 1),
+                        MyTaskListPart(userId: userId, status: 2),
                       ],
                     ),
                   ),
@@ -170,7 +172,7 @@ class AccountScreen extends HookConsumerWidget {
             message: 'Can\'t load items right now',
           ),
           loading: () {
-            return const Center(child: CircularProgressIndicator());
+            return const CupertinoActivityIndicator();
           },
         );
   }

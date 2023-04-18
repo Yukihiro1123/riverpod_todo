@@ -25,14 +25,14 @@ class AuthScreen extends HookConsumerWidget {
         //会員登録いらない場合は以下をコメントアウト
         //showAuthActionSwitch: false,
         //ヘッダはタイトルの上 webでは表示されない
-        headerBuilder: (context, constraints, _) {
-          return const CircleAvatar(
-            radius: 30,
-            // images.unsplash.comの画像のパスを貼り付ける
-            backgroundImage: NetworkImage(
-                'https://images.unsplash.com/photo-1658033014478-cc3b36e31a5e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxMDR8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=800&q=60'),
-          );
-        },
+        // headerBuilder: (context, constraints, _) {
+        //   return const CircleAvatar(
+        //     radius: 30,
+        //     // images.unsplash.comの画像のパスを貼り付ける
+        //     backgroundImage: NetworkImage(
+        //         'https://images.unsplash.com/photo-1658033014478-cc3b36e31a5e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxMDR8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=800&q=60'),
+        //   );
+        // },
         //サブタイトルはタイトルの下、アカウントをお持ちでない方の上
         subtitleBuilder: (context, action) {
           return Column(
@@ -57,7 +57,7 @@ class AuthScreen extends HookConsumerWidget {
                 ),
               ),
             ),
-            const Center(child: Text('sidebuilder')),
+            //const Center(child: Text('sidebuilder')),
           ]);
         },
         //現時点でactionは動いていないっぽい

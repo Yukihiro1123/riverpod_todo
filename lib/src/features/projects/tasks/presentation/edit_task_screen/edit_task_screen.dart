@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -197,7 +198,7 @@ class EditTaskScreen extends HookConsumerWidget {
                                     return const EmptyContent();
                                   },
                                   loading: () => const Center(
-                                      child: CircularProgressIndicator()),
+                                      child: CupertinoActivityIndicator()),
                                 );
                               },
                             ),
@@ -249,7 +250,7 @@ class EditTaskScreen extends HookConsumerWidget {
               print(error);
               return const EmptyContent();
             },
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => const Center(child: CupertinoActivityIndicator()),
           ),
     );
   }

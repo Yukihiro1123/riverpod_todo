@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
+import 'package:riverpod_todo/src/common_widgets/shimmer_effect.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
 import 'package:riverpod_todo/src/features/auth/domain/app_user.dart';
 import 'package:riverpod_todo/src/features/projects/common_widgets/search_user_part.dart';
@@ -163,8 +165,8 @@ class EditProjectScreen extends HookConsumerWidget {
                                       print(error);
                                       return const EmptyContent();
                                     },
-                                    loading: () => const Center(
-                                        child: CircularProgressIndicator()),
+                                    loading: () =>
+                                        const Center(child: ShimmerImage()),
                                   );
                                 },
                               ),
@@ -221,7 +223,7 @@ class EditProjectScreen extends HookConsumerWidget {
               print(error);
               return const EmptyContent();
             },
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => const Center(child: CupertinoActivityIndicator()),
           ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -101,7 +102,7 @@ class EditProfileScreen extends HookConsumerWidget {
             message: 'Can\'t load items right now',
           ),
           loading: () {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CupertinoActivityIndicator());
           },
         );
   }

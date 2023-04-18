@@ -164,7 +164,7 @@ class AddTaskScreen extends HookConsumerWidget {
                               return const EmptyContent();
                             },
                             loading: () => const Center(
-                                child: CircularProgressIndicator()),
+                                child: CupertinoActivityIndicator()),
                           );
                         },
                       ),

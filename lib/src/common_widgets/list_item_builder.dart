@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
+import 'package:riverpod_todo/src/common_widgets/shimmer_effect.dart';
 
 typedef ItemWidgetBuilder<T> = Widget Function(BuildContext context, T item);
 
@@ -31,7 +32,12 @@ class ListItemsBuilder<T> extends StatelessWidget {
               },
             )
           : const EmptyContent(),
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => ListView.separated(
+          separatorBuilder: (context, index) => const SizedBox(height: 10),
+          itemCount: 5,
+          itemBuilder: (context, index) {
+            return const ShimmerImage(height: 55);
+          }),
       error: (error, error2) {
         print("$error $error2");
         return const EmptyContent(
