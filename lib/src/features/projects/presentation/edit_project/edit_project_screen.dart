@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_todo/src/common_widgets/confirm_dialog.dart';
 import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
 import 'package:riverpod_todo/src/common_widgets/shimmer_effect.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
@@ -33,6 +34,10 @@ class EditProjectScreen extends HookConsumerWidget {
         TextEditingController();
 
     bool _validateAndSaveForm() {
+      if (_members.value.isEmpty) {
+        Fluttertoast.showToast(msg: "メンバーを一人以上設定してください");
+        return false;
+      }
       final form = _formKey.currentState!;
       if (form.validate()) {
         form.save();
@@ -60,7 +65,7 @@ class EditProjectScreen extends HookConsumerWidget {
 
     void _removeMember(int index, AppUser data) {
       if (_members.value.length == 1) {
-        Fluttertoast.showToast(msg: "やめろ");
+        Fluttertoast.showToast(msg: "メンバーは最低一人設定してください");
         return;
       }
       List<String> updatedList = List.from(_members.value);
@@ -73,17 +78,15 @@ class EditProjectScreen extends HookConsumerWidget {
     }
 
     Future<void> _submit(Project project) async {
-      if (_validateAndSaveForm()) {
-        final success =
-            await ref.read(editProjectScreenControllerProvider.notifier).submit(
-                  title: _title!,
-                  description: _description!,
-                  project: project,
-                  members: _members.value,
-                );
-        if (success) {
-          context.pop();
-        }
+      final success =
+          await ref.read(editProjectScreenControllerProvider.notifier).submit(
+                title: _title!,
+                description: _description!,
+                project: project,
+                members: _members.value,
+              );
+      if (success) {
+        context.pop();
       }
     }
 
@@ -165,8 +168,13 @@ class EditProjectScreen extends HookConsumerWidget {
                                       print(error);
                                       return const EmptyContent();
                                     },
-                                    loading: () =>
-                                        const Center(child: ShimmerImage()),
+                                    loading: () => ListView.separated(
+                                        separatorBuilder: (context, index) =>
+                                            const SizedBox(height: 10),
+                                        itemCount: 2,
+                                        itemBuilder: (context, index) {
+                                          return const ShimmerImage(width: 300);
+                                        }),
                                   );
                                 },
                               ),
@@ -199,10 +207,17 @@ class EditProjectScreen extends HookConsumerWidget {
                               height: 50,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  print("original members ${data.members}");
-                                  print(
-                                      "The members are ${_members.value} type is ${_members.value.runtimeType}");
-                                  _submit(data);
+                                  if (_validateAndSaveForm()) {
+                                    showConfirmDialog(
+                                        context: context,
+                                        title: "プロジェクト情報の更新",
+                                        content: "プロジェクト情報を更新してもよろしいですか",
+                                        onConfirmed: (isConfirmed) {
+                                          if (isConfirmed) {
+                                            _submit(data);
+                                          }
+                                        });
+                                  }
                                 },
                                 child: const Text(
                                   '更新',

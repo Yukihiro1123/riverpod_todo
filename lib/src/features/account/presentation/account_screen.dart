@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_todo/src/common_widgets/avatar.dart';
+import 'package:riverpod_todo/src/common_widgets/confirm_dialog.dart';
 import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
 import 'package:riverpod_todo/src/common_widgets/grid_item_builder.dart';
 
@@ -35,13 +36,26 @@ class AccountScreen extends HookConsumerWidget {
     ];
     final _controller = useTabController(initialLength: tabList.length);
     final userId = ref.watch(authRepositoryProvider).currentUser!.uid;
+
+    void _signOut() {
+      ref.read(authRepositoryProvider).signOut();
+    }
+
     return ref.watch(getAppUserByIdProvider(userId)).when(
           data: (user) {
             return Scaffold(
               appBar: AppBar(actions: [
                 IconButton(
                   onPressed: () {
-                    ref.read(authRepositoryProvider).signOut();
+                    showConfirmDialog(
+                        context: context,
+                        title: "ログアウト",
+                        content: "ログアウトしても良いですか",
+                        onConfirmed: (isConfirmed) {
+                          if (isConfirmed) {
+                            _signOut();
+                          }
+                        });
                   },
                   icon: const Icon(Icons.logout),
                 )

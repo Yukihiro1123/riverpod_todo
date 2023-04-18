@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_todo/src/common_widgets/confirm_dialog.dart';
 import 'package:riverpod_todo/src/features/projects/presentation/add_project/add_project_screen_controller.dart';
 
 import 'package:riverpod_todo/src/utils/async_value_ui.dart';
@@ -33,13 +34,11 @@ class AddProjectScreen extends HookConsumerWidget {
     }
 
     Future<void> _submit() async {
-      if (_validateAndSaveForm()) {
-        final success = await ref
-            .read(addProjectScreenControllerProvider.notifier)
-            .submit(title: _title!, description: _description!);
-        if (success) {
-          context.pop();
-        }
+      final success = await ref
+          .read(addProjectScreenControllerProvider.notifier)
+          .submit(title: _title!, description: _description!);
+      if (success) {
+        context.pop();
       }
     }
 
@@ -48,7 +47,19 @@ class AddProjectScreen extends HookConsumerWidget {
         title: const Text("プロジェクトを作成"),
         actions: <Widget>[
           TextButton(
-            onPressed: state.isLoading ? null : _submit,
+            onPressed: () {
+              if (_validateAndSaveForm()) {
+                showConfirmDialog(
+                    context: context,
+                    title: "プロジェクトの作成",
+                    content: "プロジェクトを作成しても良いですか",
+                    onConfirmed: (isConfirmed) {
+                      if (isConfirmed) {
+                        _submit;
+                      }
+                    });
+              }
+            },
             child: const Text(
               '作成',
               style: TextStyle(fontSize: 18, color: Colors.white),

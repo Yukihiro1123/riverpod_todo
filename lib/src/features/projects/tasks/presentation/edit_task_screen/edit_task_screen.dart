@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_todo/src/common_widgets/confirm_dialog.dart';
 import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
 import 'package:riverpod_todo/src/features/auth/domain/app_user.dart';
@@ -85,19 +86,17 @@ class EditTaskScreen extends HookConsumerWidget {
     }
 
     Future<void> _submit(Task task) async {
-      if (_validateAndSaveForm()) {
-        final success =
-            await ref.read(editTaskScreenControllerProvider.notifier).submit(
-                  projectId: projectId,
-                  title: _title!,
-                  description: _description!,
-                  status: _status.value == false ? 1 : 2,
-                  members: _members.value,
-                  task: task,
-                );
-        if (success) {
-          context.pop();
-        }
+      final success =
+          await ref.read(editTaskScreenControllerProvider.notifier).submit(
+                projectId: projectId,
+                title: _title!,
+                description: _description!,
+                status: _status.value == false ? 1 : 2,
+                members: _members.value,
+                task: task,
+              );
+      if (success) {
+        context.pop();
       }
     }
 
@@ -230,7 +229,17 @@ class EditTaskScreen extends HookConsumerWidget {
                             height: 50,
                             child: ElevatedButton(
                               onPressed: () {
-                                _submit(data);
+                                if (_validateAndSaveForm()) {
+                                  showConfirmDialog(
+                                      context: context,
+                                      title: "タスクの更新",
+                                      content: "タスクを更新しても良いですか",
+                                      onConfirmed: (isConfirmed) {
+                                        if (isConfirmed) {
+                                          _submit(data);
+                                        }
+                                      });
+                                }
                               },
                               child: const Text(
                                 '更新',

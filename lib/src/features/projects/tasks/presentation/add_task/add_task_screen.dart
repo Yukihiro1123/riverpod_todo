@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_todo/src/common_widgets/confirm_dialog.dart';
 import 'package:riverpod_todo/src/common_widgets/empty_content.dart';
 import 'package:riverpod_todo/src/features/auth/data/firebase_auth_repository.dart';
 import 'package:riverpod_todo/src/features/auth/domain/app_user.dart';
@@ -39,6 +40,7 @@ class AddTaskScreen extends HookConsumerWidget {
     bool _validateAndSaveForm() {
       if (_members.value.isEmpty) {
         Fluttertoast.showToast(msg: "メンバーを一人以上設定してください");
+        return false;
       }
       final form = _formKey.currentState!;
       if (form.validate()) {
@@ -76,18 +78,16 @@ class AddTaskScreen extends HookConsumerWidget {
     }
 
     Future<void> _submit() async {
-      if (_validateAndSaveForm()) {
-        print("projectID: $projectId");
-        final success =
-            await ref.read(addTaskScreenControllerProvider.notifier).submit(
-                  title: _title!,
-                  description: _description!,
-                  projectId: projectId,
-                  members: _members.value,
-                );
-        if (success) {
-          context.pop();
-        }
+      print("projectID: $projectId");
+      final success =
+          await ref.read(addTaskScreenControllerProvider.notifier).submit(
+                title: _title!,
+                description: _description!,
+                projectId: projectId,
+                members: _members.value,
+              );
+      if (success) {
+        context.pop();
       }
     }
 
@@ -96,7 +96,19 @@ class AddTaskScreen extends HookConsumerWidget {
         title: const Text("タスクを作成"),
         actions: <Widget>[
           TextButton(
-            onPressed: state.isLoading ? null : _submit,
+            onPressed: () {
+              if (_validateAndSaveForm()) {
+                showConfirmDialog(
+                    context: context,
+                    title: "タスクの作成",
+                    content: "タスクを作成しても良いですか",
+                    onConfirmed: (isConfirmed) {
+                      if (isConfirmed) {
+                        _submit();
+                      }
+                    });
+              }
+            },
             child: const Text(
               '作成',
               style: TextStyle(fontSize: 18, color: Colors.white),

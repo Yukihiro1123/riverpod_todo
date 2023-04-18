@@ -7,3 +7,8 @@ flutter pub add freezed_annotation json_annotation hooks_riverpod flutter_hooks 
 flutter pub add firebase_auth firebase_core cloud_firestore firebase_storage firebase_analytics
 
 flutter pub add --dev build_runner freezed json_serializable
+
+## デプロイ
+
+flutter build web --web-renderer html
+firebase deploy --only hosting
