@@ -1,7 +1,10 @@
 # riverpod_todo
 
+flutter+riverpod で作成したプロジェクト管理アプリ
+
+https://riverpod-todo-170f4.web.app/#/projects
+
 - プロジェクト概要をダイアログにする
-- プロジェクト、タスクの削除&その後のブラウザバック禁止
 
 ## デプロイ
 
